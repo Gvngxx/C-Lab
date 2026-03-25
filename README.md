@@ -4,27 +4,29 @@ Este es un ejemplo simple de un proyecto C++ que utiliza CMake y MinGW64 para co
 
 ## Uso Rápido
 
-1. **Doble clic en `build_and_run.bat`** o ejecuta `.\build_and_run.ps1`
+1. **Doble clic en `build_and_run.bat`** o ejecuta `.\build_and_run.sh`
 2. El script compilará todo automáticamente y ejecutará el programa
-3. Verás una ventana azul de OpenGL que se cierra al presionar ESC
+3. Verás una ventana OpenGL que se cierra al presionar ESC
 
 ## Estructura del Proyecto
 
-- **src/**: Contiene los archivos fuente del proyecto (main.cpp).
+- **src/**: Contiene los archivos fuente del proyecto (main.cpp & *.cpp *.h).
 - **lib/**: Contiene las bibliotecas externas necesarias:
   - **glad/**: Para cargar funciones de OpenGL.
   - **glfw/**: Para crear ventanas y manejar entrada.
-  - **glm/**: Biblioteca de matemáticas para gráficos (no usada en este ejemplo simple).
-  - **imgui/**: Interfaz de usuario inmediata (no usada en este ejemplo).
-  - **json/**: Biblioteca para JSON (no usada).
-  - **stb/**: Bibliotecas de imágenes y utilidades (no usadas).
-  - **tinygltf/**: Para cargar modelos glTF (no usado).
-  - **tinyobj/**: Para cargar objetos OBJ (no usado).
+  - **glm/**: Biblioteca de matemáticas para gráficos (Usada).
+  - **imgui/**: Interfaz de usuario inmediata (Usada para debug).
+  - **json/**: Biblioteca para JSON (Para futuro).
+  - **stb/**: Bibliotecas de imágenes y utilidades (Para futuro).
+  - **tinygltf/**: Para cargar modelos glTF (Inutil).
+  - **tinyobj/**: Para cargar objetos OBJ (Para futuro).
 - **bin/**: Directorio donde se genera el ejecutable compilado.
-- **assets/**: Para recursos como modelos, texturas, etc. (vacío en este ejemplo).
+- **VNC**: Carpeta donde se almacena todo noVNC para ejecutar el exe en web.
+- **assets/**: Para recursos como modelos, texturas, etc. (Vacio temporal mente).
 - **mingw64/**: Contiene el compilador MinGW64 y herramientas.
 - **build_and_run.bat**: Script batch para compilar y ejecutar automáticamente.
 - **build_and_run.ps1**: Script PowerShell para compilar y ejecutar automáticamente.
+- **build_and_run.sh**: Script linux para compilar y ejecutar automáticamente.
 - **compile.txt**: Contiene comandos de compilación manual.
 
 ## Compilación
@@ -39,6 +41,12 @@ build_and_run.bat
 **PowerShell (.ps1):**
 ```powershell
 .\build_and_run.ps1
+```
+
+**Linux Shell (.sh):**
+```terminal
+chmod +x build_and_run.sh
+./build_and_run.sh
 ```
 
 Estos scripts compilan GLFW automáticamente si no existe, compilan el proyecto y lo ejecutan, mostrando todos los logs.
@@ -77,10 +85,3 @@ El ejemplo crea una ventana simple usando GLFW y OpenGL. Muestra una pantalla az
 - **GLFW**: Maneja la creación de ventanas, eventos de entrada y contexto OpenGL.
 - **GLAD**: Carga las funciones de OpenGL dinámicamente.
 - **OpenGL**: API gráfica para renderizar.
-
-## Notas
-
-- Los scripts `build_and_run.bat` y `build_and_run.ps1` manejan automáticamente la compilación de GLFW si no existe
-- Para PowerShell, es posible que necesites cambiar la política de ejecución: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-- El proyecto usa OpenGL 3.3 Core Profile
-- La ventana se puede cerrar presionando ESC o cerrando la ventana normalmente

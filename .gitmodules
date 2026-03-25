@@ -1,0 +1,3 @@
+[submodule "VNC/noVNC"]
+	path = VNC/noVNC
+	url = https://github.com/Gvngxx/C-Lab.git

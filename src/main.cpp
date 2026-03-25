@@ -19,7 +19,7 @@ int main() {
 
     // Inicializar GLFW
     if (!glfwInit()) {
-        std::cerr << "Error al inicializar GLFW" << std::endl;
+        std::cerr << "Error al inicializar GLFW";
         return -1;
     }
 
@@ -52,7 +52,7 @@ int main() {
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+         0.5f,  0.5f, 0.0f
     };
 
     unsigned int VBO, VAO;

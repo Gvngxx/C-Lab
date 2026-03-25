@@ -72,3 +72,9 @@ LIMPIAR COMPILACION
 
 del /Q bin\CppLabExample.exe
 rmdir /S /Q lib\glfw\build
+
+====================================================================
+Ejecutar VNC
+====================================================================
+
+./VNC/start_vnc.sh
