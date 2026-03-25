@@ -1,0 +1,11 @@
+CompileFlags:
+  Add:
+    - -std=c++17
+    - -I${workspaceFolder}/lib/glad/include
+    - -I${workspaceFolder}/lib/glfw/include
+    - -I${workspaceFolder}/lib/glm
+    - -I${workspaceFolder}/lib/imgui
+    - -I${workspaceFolder}/lib/json
+    - -I${workspaceFolder}/lib/stb
+    - -I${workspaceFolder}/lib/tinygltf
+    - -I${workspaceFolder}/lib/tinyobj

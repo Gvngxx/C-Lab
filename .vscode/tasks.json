@@ -1,0 +1,80 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar (g++)",
+            "type": "shell",
+            "command": "del",
+            "args": [
+                "/Q",
+                "bin\\CppLabExample.exe"
+            ],
+            "windows": {
+                "command": "cmd",
+                "args": [
+                    "/C",
+                    "del /Q bin\\CppLabExample.exe 2>nul || exit 0 && mingw64\\bin\\g++.exe -o bin\\CppLabExample.exe src\\main.cpp lib\\glad\\src\\gl.c -I lib\\glad\\include -I lib\\glfw\\include -L lib\\glfw\\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17"
+                ]
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Compilar y ejecutar",
+            "type": "shell",
+            "dependsOn": "Compilar (g++)",
+            "command": "bin\\CppLabExample.exe",
+            "group": {
+                "kind": "build"
+            },
+            "windows": {
+                "command": ".\\bin\\CppLabExample.exe"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "new"
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        },
+        {
+            "label": "Limpiar compilación",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/C",
+                "del /Q bin\\CppLabExample.exe 2>nul || exit 0"
+            ],
+            "windows": {
+                "command": "cmd",
+                "args": [
+                    "/C",
+                    "if exist bin\\CppLabExample.exe del /Q bin\\CppLabExample.exe"
+                ]
+            },
+            "group": {
+                "kind": "build"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "MinGW64",
+            "includePath": [
+                "${workspaceFolder}/lib/glad/include",
+                "${workspaceFolder}/lib/glfw/include",
+                "${workspaceFolder}/lib/glm",
+                "${workspaceFolder}/lib/imgui",
+                "${workspaceFolder}/lib/json",
+                "${workspaceFolder}/lib/stb",
+                "${workspaceFolder}/lib/tinygltf",
+                "${workspaceFolder}/lib/tinyobj",
+                "${workspaceFolder}/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include",
+                "${workspaceFolder}/mingw64/x86_64-w64-mingw32/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "${workspaceFolder}/mingw64/bin/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

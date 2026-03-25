@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/workspace/C++LAB/lib/glfw/build/cmake_install.cmake",
+		"C:/workspace/C++LAB/lib/glfw/build/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

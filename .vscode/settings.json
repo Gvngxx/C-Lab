@@ -1,0 +1,16 @@
+{
+    "C_Cpp.default.configurationName": "MinGW64",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/build": false,
+        "**/bin": false
+    }
+}
