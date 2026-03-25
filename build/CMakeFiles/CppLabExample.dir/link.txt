@@ -1,1 +1,0 @@
-/usr/bin/g++ -g CMakeFiles/CppLabExample.dir/src/main.cpp.o CMakeFiles/CppLabExample.dir/src/shaderprogram.cpp.o CMakeFiles/CppLabExample.dir/lib/glad/src/gl.c.o -o /workspaces/C-Lab/bin/CppLabExample  /usr/lib/x86_64-linux-gnu/libglfw.so.3.3 /usr/lib/x86_64-linux-gnu/libGL.so -lX11 -lpthread -ldl 
