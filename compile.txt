@@ -10,7 +10,7 @@ REQUISITOS:
 PASO 1: COMPILAR GLFW (hace una sola vez)
 ====================================================================
 
-mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Make"
+mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Maked"
 
 cd lib\glfw
 mkdir build
