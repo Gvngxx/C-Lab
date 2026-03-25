@@ -24,6 +24,7 @@ include_directories(
 # Agregar archivos fuente
 set(SOURCES
     src/main.cpp
+    src/shaderprogram.cpp
     lib/glad/src/gl.c
 )
 

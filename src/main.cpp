@@ -1,5 +1,6 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+#include "shaderprogram.h"
 #include <iostream>
 
 // Función de callback para errores de GLFW
@@ -28,7 +29,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Crear ventana
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Ejemplo de Ventana OpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Fan | V0.1.0", NULL, NULL);
     if (!window) {
         std::cerr << "Error al crear la ventana GLFW" << std::endl;
         glfwTerminate();
@@ -47,20 +48,63 @@ int main() {
         return -1;
     }
 
+    // Crear datos para un triangulo
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+    };
+
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    const char* vertexShaderSource = "#version 330 core\n"
+        "layout(location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos, 1.0);\n"
+        "}\n";
+
+    const char* fragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(0.1, 0.8, 0.2, 1.0);\n"
+        "}\n";
+
+    ShaderProgram shader(vertexShaderSource, fragmentShaderSource);
+
     // Bucle principal
     while (!glfwWindowShouldClose(window)) {
         // Procesar eventos
         glfwPollEvents();
 
-        // Limpiar pantalla con color azul
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        // Limpiar pantalla
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        shader.use();
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
 
         // Intercambiar buffers
         glfwSwapBuffers(window);
     }
 
     // Limpiar y terminar
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
