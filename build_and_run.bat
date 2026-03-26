@@ -38,7 +38,7 @@ echo Eliminando ejecutable anterior...
 del /Q bin\CppLabExample.exe 2>nul
 
 echo Compilando proyecto principal...
-mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
+mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp src\triangle.cpp  lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
 if %errorlevel% neq 0 (
     echo ERROR: Fallo en compilacion del proyecto

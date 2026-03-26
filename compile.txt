@@ -4,21 +4,9 @@
 
 REQUISITOS:
 - MinGW64 (g++, gcc, cmake, mingw32-make)
+- CMake
 - GLFW debe compilarse primero
 
-====================================================================
-PASO 1: COMPILAR GLFW (hace una sola vez)
-====================================================================
-
-mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Maked"
-
-cd lib\glfw
-mkdir build
-cd build
-
-..\..\..\mingw64\bin\cmake.exe .. -G "MinGW Makefiles" -DCMAKE_C_COMPILER=C:\workspace\C++LAB\mingw64\bin\gcc.exe -DCMAKE_CXX_COMPILER=C:\workspace\C++LAB\mingw64\bin\g++.exe -DCMAKE_MAKE_PROGRAM=C:\workspace\C++LAB\mingw64\bin\mingw32-make.exe -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF
-
-..\..\..\mingw64\bin\mingw32-make.exe
 
 ====================================================================
 PASO 2: COMPILAR EL PROYECTO (desde el directorio raiz)
@@ -63,20 +51,13 @@ COMANDO RAPIDO PARA COMPILAR (desde raiz del proyecto)
 mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
 ====================================================================
-EJECUTAR EL PROGRAMA
-====================================================================
-
-bin\CppLabExample.exe
-
-====================================================================
-LIMPIAR COMPILACION
-====================================================================
-
-del /Q bin\CppLabExample.exe
-rmdir /S /Q lib\glfw\build
-
-====================================================================
 Ejecutar VNC
 ====================================================================
 
 ./VNC/start_vnc.sh
+
+====================================================================
+Cmake
+====================================================================
+
+mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Maked"

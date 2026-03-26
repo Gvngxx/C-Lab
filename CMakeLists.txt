@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Agregar archivos fuente
 set(SOURCES
     src/main.cpp
+    src/triangle.cpp
     src/shaderprogram.cpp
     lib/glad/src/gl.c
 )
