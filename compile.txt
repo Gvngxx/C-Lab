@@ -54,7 +54,7 @@ mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp 
 Ejecutar VNC
 ====================================================================
 
-./VNC/start_vnc.sh
+clear && ./VNC/start_vnc.sh
 
 ====================================================================
 Cmake
