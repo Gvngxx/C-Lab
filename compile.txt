@@ -15,13 +15,13 @@ PASO 2: COMPILAR EL PROYECTO (desde el directorio raiz)
 cd c:\workspace\C++LAB
 
 REM Eliminar ejecutable anterior
-del /Q bin\CppLabExample.exe 2>nul || exit /b 0
+del /Q bin\LabProg.exe 2>nul || exit /b 0
 
 REM Compilar con g++
-mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
+mingw64\bin\g++.exe -o bin\LabProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
 REM Verificar que se creo
-dir bin\CppLabExample.exe
+dir bin\LabProg.exe
 
 ====================================================================
 COMANDOS INDIVIDUALES (BASH SCRIPT)
@@ -39,8 +39,8 @@ cd lib/glfw && mkdir -p build && cd build
 
 # Compilar proyecto principal
 cd /d c:\workspace\C++LAB
-del /Q bin\CppLabExample.exe 2>nul || exit /b 0
-mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c \
+del /Q bin\LabProg.exe 2>nul || exit /b 0
+mingw64\bin\g++.exe -o bin\LabProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c \
   -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src \
   -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
@@ -48,7 +48,7 @@ mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp 
 COMANDO RAPIDO PARA COMPILAR (desde raiz del proyecto)
 ====================================================================
 
-mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
+mingw64\bin\g++.exe -o bin\LabProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
 ====================================================================
 Ejecutar VNC

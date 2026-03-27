@@ -1,18 +1,30 @@
 cmake_minimum_required(VERSION 3.10)
-project(CppLabExample)
+project(LabProg)
 
 # Establecer el estándar de C++
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# ImGui
+set(IMGUI_SOURCES
+    lib/imgui/imgui.cpp
+    lib/imgui/imgui_draw.cpp
+    lib/imgui/imgui_widgets.cpp
+    lib/imgui/imgui_tables.cpp
+    lib/imgui/backends/imgui_impl_glfw.cpp
+    lib/imgui/backends/imgui_impl_opengl3.cpp
+)
 
 # Agregar archivos fuente
 set(SOURCES
     src/main.cpp
     src/ShaderProgram.cpp
     src/InputManager.cpp
-    # src/DebugManager.cpp
+    src/DebugManager.cpp
+    src/Camera.cpp
     src/Triangle.cpp
     lib/glad/src/gl.c
+    ${IMGUI_SOURCES}
 )
 
 # Crear ejecutable

@@ -1,4 +1,4 @@
-#include "shaprog.h"
+#include "ShaderProgram.h"
 #include <iostream>
 
 ShaderProgram::ShaderProgram(const char* vertexSource, const char* fragmentSource) {

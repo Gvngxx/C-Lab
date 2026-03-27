@@ -66,12 +66,12 @@ else
 fi
 
 # Ejecutar la aplicación
-if [ -x "$ROOT/bin/CppLabExample.exe" ]; then
-  echo "6) Ejecutando bin/CppLabExample.exe con wine en DISPLAY=$XVFB_DISPLAY"
-  DISPLAY=$XVFB_DISPLAY wine "$ROOT/bin/CppLabExample.exe" &
-elif [ -x "$ROOT/bin/CppLabExample" ]; then
-  echo "6) Ejecutando bin/CppLabExample en DISPLAY=$XVFB_DISPLAY"
-  DISPLAY=$XVFB_DISPLAY "$ROOT/bin/CppLabExample" &
+if [ -x "$ROOT/bin/LabProg.exe" ]; then
+  echo "6) Ejecutando bin/LabProg.exe con wine en DISPLAY=$XVFB_DISPLAY"
+  DISPLAY=$XVFB_DISPLAY wine "$ROOT/bin/LabProg.exe" &
+elif [ -x "$ROOT/bin/LabProg" ]; then
+  echo "6) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
+  DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
 else
   echo "6) No se encontró ejecutable. Compilando automáticamente..."
   # Compilar el proyecto
@@ -81,9 +81,9 @@ else
   make
   cd "$ROOT"
   # Ejecutar
-  if [ -x "$ROOT/bin/CppLabExample" ]; then
-    echo "7) Ejecutando bin/CppLabExample en DISPLAY=$XVFB_DISPLAY"
-    DISPLAY=$XVFB_DISPLAY "$ROOT/bin/CppLabExample" &
+  if [ -x "$ROOT/bin/LabProg" ]; then
+    echo "7) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
+    DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
   else
     echo "Error: Falló la compilación. Revisa logs arriba." >&2
   fi

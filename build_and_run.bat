@@ -35,10 +35,31 @@ if not exist "lib\glfw\build\src\libglfw3.a" (
 )
 
 echo Eliminando ejecutable anterior...
-del /Q bin\CppLabExample.exe 2>nul
+del /Q bin\LabProg.exe 2>nul
 
 echo Compilando proyecto principal...
-mingw64\bin\g++.exe -o bin\CppLabExample.exe src\main.cpp src\shaderprogram.cpp src\triangle.cpp  lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
+mingw64\bin\g++.exe -o bin\LabProg.exe ^
+src\main.cpp ^
+src\shaderprogram.cpp ^
+src\InputManager.cpp ^
+src\DebugManager.cpp ^
+src\Camera.cpp ^
+src\triangle.cpp ^
+lib\glad\src\gl.c ^
+lib\imgui\imgui.cpp ^
+lib\imgui\imgui_draw.cpp ^
+lib\imgui\imgui_demo.cpp ^
+lib\imgui\imgui_tables.cpp ^
+lib\imgui\imgui_widgets.cpp ^
+lib\imgui\backends\imgui_impl_glfw.cpp ^
+lib\imgui\backends\imgui_impl_opengl3.cpp ^
+-I lib\imgui ^
+-I lib\imgui\backends ^
+-I lib\glad\include ^
+-I lib\glfw\include ^
+-L lib\glfw\build\src ^
+-lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 ^
+-std=c++17
 
 if %errorlevel% neq 0 (
     echo ERROR: Fallo en compilacion del proyecto
@@ -46,9 +67,12 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo Compilacion exitosa. Ejecutando programa...
+echo Compilacion exitosa
+timeout 5 > NUL
+
+echo Ejecutando programa...
 echo ====================================================================
-bin\CppLabExample.exe
+bin\LabProg.exe
 
 if %errorlevel% neq 0 (
     echo ERROR: El programa termino con codigo %errorlevel%
@@ -56,4 +80,4 @@ if %errorlevel% neq 0 (
 
 echo ====================================================================
 echo Proceso completado.
-pause
+exit /b 0
