@@ -5,10 +5,10 @@ Este directorio contiene scripts para ejecutar la app OpenGL dentro de un servid
 ## Requisitos
 - Linux (GitHub Codespaces / container)
 - `Xvfb`, `x11vnc`, `python3-pip`, `git`
-- opcional: `wine64` (para ejecutar `bin/CppLabExample.exe` si es un exe de Windows)
+- opcional: `wine64` (para ejecutar `bin/LagProg.exe` si es un exe de Windows)
 
 ## Uso rápido
-1. Compila tu proyecto y genera `bin/CppLabExample.exe` (o `bin/CppLabExample`).
+1. Compila tu proyecto y genera `bin/LagProg.exe` (o `bin/LagProg`).
 2. Desde el root de repositorio:
    ```bash
    ./VNC/start_vnc.sh
@@ -26,5 +26,5 @@ Este directorio contiene scripts para ejecutar la app OpenGL dentro de un servid
 - Verás la ventana de OpenGL dentro de noVNC.
 
 ## Nota de compatibilidad
-- En PC Windows, ejecuta usualmente `bin/CppLabExample.exe` directamente.
+- En PC Windows, ejecuta usualmente `bin/LagProg.exe` directamente.
 - En Codespaces Linux se usa `wine` si existe el `.exe`, o el binario Linux si está presente.

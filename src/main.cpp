@@ -1,7 +1,13 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include "shaprog.h"
-#include "triangle.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include "ShaderProgram.h"
+#include "Triangle.h"
+#include "Camera.h"
+#include "Keyboard.h"
+#include "DebugManager.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -15,7 +21,7 @@ std::string readFile(const char* filePath) {
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, double deltaTime, Camera& camera);
 
 int main() {
     glfwInit();
@@ -40,31 +46,68 @@ int main() {
         return -1;
     }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    glfwSetKeyCallback(window, Keyboard::KeyCallback);
+    glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
+    glfwSetMouseButtonCallback(window, Mouse::MouseButtonCallback);
+    glfwSetScrollCallback(window, Mouse::WheelCallback);
     
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     std::string vertexCode = readFile("assets/shaders/vertx.glsl");
     std::string fragmentCode = readFile("assets/shaders/frag.glsl");
     ShaderProgram shader(vertexCode.c_str(), fragmentCode.c_str());
-    
+
+    Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+
+    // --- MATRIZ DE PROYECCIÓN ---
+    // Define el campo de visión (45 grados), el ratio de aspecto y qué tan cerca/lejos vemos.
+    glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)1280 / (float)720, 0.1f, 100.0f);
+
+    // --- MATRIZ DE VISTA ---
+    // Obtiene la posición y dirección actual de la cámara
+    glm::mat4 view = camera.GetViewMatrix();\
+    DebugManager debug{window, &shader};
+
     Triangle triangle;
 
-    int MoveA = glGetAttribLocation(shader.id(), "Time");
+    // int MoveA = glGetAttribLocation(shader.id(), "Time");
+
+    float deltatime = 0.0f;
+    float lastFrame = 0.0f;
+    Mouse::scrollY = 0;
 
     // Loop
     while (!glfwWindowShouldClose(window)) {
+        double currentFrame = glfwGetTime();
+        deltatime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // Limpiar pantalla
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // activate shader
         shader.bind();
 
-        shader.setFloat("Time", (std::sin(glfwGetTime()) + 1.0f) / 3); // Move between 0.0 and 1.0 over time
+        // 2. ENVIAR MATRICES DENTRO DEL LOOP
+        glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), 1280.0f / 720.0f, 0.1f, 100.0f);
+        shader.setMat4("projection", &projection[0][0]); 
 
-        // input
-        processInput(window);
+        glm::mat4 view = camera.GetViewMatrix();
+        shader.setMat4("view", &view[0][0]);
 
-        // render
+        // ---- Input ----
+        processInput(window, deltatime, camera);
+        camera.updateCameraDirection(Mouse::getDX(), Mouse::getDY());
+        camera.updateCameraZoom(Mouse::scrollY);
+
+        // --- Render ---
+        debug.beginFrame();
+        debug.render();
+
         triangle.Render(shader.id());
 
+        debug.endFrame();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -81,19 +124,26 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window) {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
+    if(glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
-    if(glfwGetKey(window, GLFW_KEY_F4) == GLFW_TRUE) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe
-    } else if(glfwGetKey(window, GLFW_KEY_F5) == GLFW_TRUE) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // ReFill
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_TRUE) {
+        bool toggle;
+        glfwSetInputMode(window, GLFW_CURSOR, &toggle ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+
     }
 
-    /* if(glfwGetKey(window, GLFW_KEY_D) == GLFW_TRUE) {
-        int MoveA = glGetAttribLocation(shaderProgramID, "a");
-
-        glUniform1f(MoveA, 0.5f);
-    }*/
+    if(Keyboard::keys[GLFW_KEY_W])
+        camera.updateCameraPos(CameraDirection::FORWARD, deltaTime);
+    if(Keyboard::keys[GLFW_KEY_D])
+        camera.updateCameraPos(CameraDirection::RIGHT, deltaTime);
+    if(Keyboard::keys[GLFW_KEY_A])
+        camera.updateCameraPos(CameraDirection::LEFT, deltaTime);
+    if(Keyboard::keys[GLFW_KEY_S])
+        camera.updateCameraPos(CameraDirection::BACKWARD, deltaTime);
+    if(Keyboard::keys[GLFW_KEY_Q]) 
+        camera.updateCameraPos(CameraDirection::UP, deltaTime);
+    if(Keyboard::keys[GLFW_KEY_Z])
+        camera.updateCameraPos(CameraDirection::DOWN, deltaTime);
 }
