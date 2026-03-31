@@ -4,7 +4,7 @@ Este es un ejemplo simple de un proyecto C++ que utiliza CMake y MinGW64 para co
 
 ## Uso Rápido
 
-1. **Doble clic en `build_and_run.bat`** o ejecuta `.\build_and_run.sh`
+1. **Doble clic en `build_and_run.bat`** o ejecuta `python build.py`
 2. El script compilará todo automáticamente y ejecutará el programa
 3. Verás una ventana OpenGL que se cierra al presionar ESC
 

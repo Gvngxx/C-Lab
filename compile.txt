@@ -15,6 +15,7 @@ PASO 2: COMPILAR EL PROYECTO (desde el directorio raiz)
 cd c:\workspace\C++LAB
 
 REM Eliminar ejecutable anterior
+<<<<<<< HEAD
 del /Q bin\LagProg.exe 2>nul || exit /b 0
 
 REM Compilar con g++
@@ -22,6 +23,15 @@ mingw64\bin\g++.exe -o bin\LagProg.exe src\main.cpp src\shaderprogram.cpp lib\gl
 
 REM Verificar que se creo
 dir bin\LagProg.exe
+=======
+del /Q bin\LabProg.exe 2>nul || exit /b 0
+
+REM Compilar con g++
+mingw64\bin\g++.exe -o bin\LabProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
+
+REM Verificar que se creo
+dir bin\LabProg.exe
+>>>>>>> 12eb20d406b4da5d6a8c16d02a66cb5ce93631ab
 
 ====================================================================
 COMANDOS INDIVIDUALES (BASH SCRIPT)
@@ -39,8 +49,13 @@ cd lib/glfw && mkdir -p build && cd build
 
 # Compilar proyecto principal
 cd /d c:\workspace\C++LAB
+<<<<<<< HEAD
 del /Q bin\LagProg.exe 2>nul || exit /b 0
 mingw64\bin\g++.exe -o bin\LagProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c \
+=======
+del /Q bin\LabProg.exe 2>nul || exit /b 0
+mingw64\bin\g++.exe -o bin\LabProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c \
+>>>>>>> 12eb20d406b4da5d6a8c16d02a66cb5ce93631ab
   -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src \
   -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
@@ -48,7 +63,7 @@ mingw64\bin\g++.exe -o bin\LagProg.exe src\main.cpp src\shaderprogram.cpp lib\gl
 COMANDO RAPIDO PARA COMPILAR (desde raiz del proyecto)
 ====================================================================
 
-mingw64\bin\g++.exe -o bin\LagProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
+mingw64\bin\g++.exe -o bin\LabProg.exe src\main.cpp src\shaderprogram.cpp lib\glad\src\gl.c -I lib\glad\include -I lib\glfw\include -L lib\glfw\build\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17
 
 ====================================================================
 Ejecutar VNC

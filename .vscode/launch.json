@@ -5,7 +5,7 @@
             "name": "Debuguear (gdb)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/LagProg.exe",
+            "program": "${workspaceFolder}/bin/CppLabExample.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

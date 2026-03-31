@@ -9,7 +9,7 @@
         "editor.defaultFormatter": "ms-vscode.cpptools"
     },
     "files.exclude": {
-        "**/.git": true,
+        "**/.git": false,
         "**/build": false,
         "**/bin": false
     }

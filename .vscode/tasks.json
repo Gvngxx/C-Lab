@@ -13,7 +13,7 @@
                 "command": "cmd",
                 "args": [
                     "/C",
-                    "del /Q bin\\LagProg.exe 2>nul || exit 0 && mingw64\\bin\\g++.exe -o bin\\LagProg.exe src\\main.cpp src\\shaderprogram.cpp lib\\glad\\src\\gl.c -I lib\\glad\\include -I lib\\glfw\\include -L lib\\glfw\\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17"
+                    "del /Q bin\\LabProg.exe 2>nul || exit 0 && mingw64\\bin\\g++.exe -o bin\\LabProg.exe src\\main.cpp src\\shaderprogram.cpp lib\\glad\\src\\gl.c -I lib\\glad\\include -I lib\\glfw\\include -L lib\\glfw\\src -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -std=c++17"
                 ]
             },
             "group": {
@@ -34,12 +34,12 @@
             "label": "Compilar y ejecutar",
             "type": "shell",
             "dependsOn": "Compilar (g++)",
-            "command": "bin\\LagProg.exe",
+            "command": "bin\\LabProg.exe",
             "group": {
                 "kind": "build"
             },
             "windows": {
-                "command": ".\\bin\\LagProg.exe"
+                "command": ".\\bin\\LabProg.exe"
             },
             "presentation": {
                 "echo": true,
@@ -57,13 +57,21 @@
             "command": "cmd",
             "args": [
                 "/C",
+<<<<<<< HEAD
                 "del /Q bin\\LagProg.exe 2>nul || exit 0"
+=======
+                "del /Q bin\\LabProg.exe 2>nul || exit 0"
+>>>>>>> 12eb20d406b4da5d6a8c16d02a66cb5ce93631ab
             ],
             "windows": {
                 "command": "cmd",
                 "args": [
                     "/C",
+<<<<<<< HEAD
                     "if exist bin\\LagProg.exe del /Q bin\\LagProg.exe"
+=======
+                    "if exist bin\\LabProg.exe del /Q bin\\LabProg.exe"
+>>>>>>> 12eb20d406b4da5d6a8c16d02a66cb5ce93631ab
                 ]
             },
             "group": {

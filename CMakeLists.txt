@@ -4,6 +4,16 @@ project(LabProg)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# ImGui
+set(IMGUI_SOURCES
+    lib/imgui/imgui.cpp
+    lib/imgui/imgui_draw.cpp
+    lib/imgui/imgui_widgets.cpp
+    lib/imgui/imgui_tables.cpp
+    lib/imgui/backends/imgui_impl_glfw.cpp
+    lib/imgui/backends/imgui_impl_opengl3.cpp
+)
+
 # ImGui Fuentes (Mismos que en el .py)
 set(IMGUI_SOURCES
     lib/imgui/imgui.cpp
@@ -23,8 +33,10 @@ set(SOURCES
     src/Camera.cpp
     src/Triangle.cpp
     lib/glad/src/gl.c
-    ${IMGUI_SOURCES}
 )
+
+# Crear ejecutable
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Directorios de inclusión para AMBOS (Win/Linux)
 include_directories(

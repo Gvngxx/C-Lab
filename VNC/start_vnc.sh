@@ -72,6 +72,7 @@ if [ -x "$ROOT/bin/LagProg.exe" ]; then
 elif [ -x "$ROOT/bin/LagProg" ]; then
   echo "6) Ejecutando bin/LagProg en DISPLAY=$XVFB_DISPLAY"
   DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LagProg" &
+
 else
   echo "6) No se encontró ejecutable. Compilando automáticamente..."
   # Compilar el proyecto
@@ -81,9 +82,15 @@ else
   make
   cd "$ROOT"
   # Ejecutar
+<<<<<<< HEAD
   if [ -x "$ROOT/bin/LagProg" ]; then
     echo "7) Ejecutando bin/LagProg en DISPLAY=$XVFB_DISPLAY"
     DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LagProg" &
+=======
+  if [ -x "$ROOT/bin/LabProg" ]; then
+    echo "7) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
+    DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
+>>>>>>> 12eb20d406b4da5d6a8c16d02a66cb5ce93631ab
   else
     echo "Error: Falló la compilación. Revisa logs arriba." >&2
   fi
