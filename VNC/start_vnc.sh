@@ -9,7 +9,7 @@ cd "$ROOT"
 
 XVFB_DISPLAY=":1"
 RESOLUTION="1280x720x24"
-VNC_PORT=5901
+VNC_PORT=5900
 WEB_PORT=6080
 
 # Limpiar procesos anteriores
@@ -30,11 +30,7 @@ if ! command -v websockify >/dev/null; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
-if ! command -v wine >/dev/null; then
-  echo "Advertencia: wine no instalado. Instala con sudo apt-get install -y wine64." >&2
-fi
-
-# noVNC (clonamos si no existe)
+# noVNC (clonamos si no exista)
 if [ ! -d "$ROOT/VNC/noVNC" ]; then
   echo "2) Clonando noVNC..."
   git clone https://github.com/novnc/noVNC.git "$ROOT/VNC/noVNC"
@@ -46,15 +42,21 @@ if pgrep -f "Xvfb $XVFB_DISPLAY" >/dev/null; then
 else
   echo "3) Arrancando Xvfb en $XVFB_DISPLAY ($RESOLUTION)"
   Xvfb $XVFB_DISPLAY -screen 0 $RESOLUTION &
-  sleep 2  # Esperar a que Xvfb esté listo
+  sleep 2
 fi
 
 # Arrancamos x11vnc
 if pgrep -f "x11vnc .* -rfbport $VNC_PORT" >/dev/null; then
   echo "x11vnc ya está corriendo en puerto $VNC_PORT"
 else
-  echo "4) Arrancando x11vnc en $VNC_PORT"
-  x11vnc -display $XVFB_DISPLAY -forever -shared -nopw -rfbport $VNC_PORT &
+  echo "4) Arrancando x11vnc en $VNC_PORT con input habilitado"
+  x11vnc -display $XVFB_DISPLAY -forever -shared -nopw -rfbport $VNC_PORT -grabkbd -grabptr -xkb -ncache 10 -ncache_cr &
+  sleep 1
+  if ss -ltnp 2>/dev/null | grep -q ":$VNC_PORT"; then
+    echo "x11vnc escuchando en el puerto $VNC_PORT"
+  else
+    echo "Advertencia: x11vnc no parece estar escuchando en $VNC_PORT" >&2
+  fi
 fi
 
 # Arrancamos websockify (noVNC)
@@ -63,39 +65,34 @@ if pgrep -f "websockify $WEB_PORT" >/dev/null; then
 else
   echo "5) Arrancando websockify en $WEB_PORT -> localhost:$VNC_PORT"
   websockify --web "$ROOT/VNC/noVNC" $WEB_PORT localhost:$VNC_PORT &
+  sleep 1
+  if ss -ltnp 2>/dev/null | grep -q ":$WEB_PORT"; then
+    echo "websockify escuchando en el puerto $WEB_PORT"
+  else
+    echo "Advertencia: websockify no parece estar escuchando en $WEB_PORT" >&2
+  fi
 fi
 
 # Ejecutar la aplicación
-if [ -x "$ROOT/bin/LagProg.exe" ]; then
-  echo "6) Ejecutando bin/LagProg.exe con wine en DISPLAY=$XVFB_DISPLAY"
-  DISPLAY=$XVFB_DISPLAY wine "$ROOT/bin/LagProg.exe" &
-elif [ -x "$ROOT/bin/LagProg" ]; then
-  echo "6) Ejecutando bin/LagProg en DISPLAY=$XVFB_DISPLAY"
-  DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LagProg" &
-
+if [ -x "$ROOT/bin/LabProg" ]; then
+  echo "6) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
+  DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
 else
   echo "6) No se encontró ejecutable. Compilando automáticamente..."
-  # Compilar el proyecto
-  echo "  Compilando proyecto..."
-  mkdir -p build && cd build
-  cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release
-  make
-  cd "$ROOT"
-  # Ejecutar
-<<<<<<< HEAD
-  if [ -x "$ROOT/bin/LagProg" ]; then
-    echo "7) Ejecutando bin/LagProg en DISPLAY=$XVFB_DISPLAY"
-    DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LagProg" &
-=======
+  mkdir -p build
+  cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+  cmake --build build -- -j$(nproc)
+
   if [ -x "$ROOT/bin/LabProg" ]; then
     echo "7) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
     DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
->>>>>>> 12eb20d406b4da5d6a8c16d02a66cb5ce93631ab
   else
     echo "Error: Falló la compilación. Revisa logs arriba." >&2
+    exit 1
   fi
 fi
 
 echo "Listo: abre en tu navegador el web port forwarding del Codespace:"
 echo "  http://localhost:$WEB_PORT/vnc.html?host=localhost&port=$WEB_PORT"
+echo "Para input: haz clic en la ventana para dar foco, luego usa teclado/mouse."
 echo "También puedes exponer el puerto 6080 en el panel de Ports de Codespaces."

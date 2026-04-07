@@ -1,82 +1,77 @@
-# C++ Lab Example
+# LVNG Engine
 
-Este es un ejemplo simple de un proyecto C++ que utiliza CMake y MinGW64 para compilar una aplicación OpenGL con GLFW y GLAD.
+Un motor de juegos 3D moderno escrito en C++ que utiliza OpenGL, GLFW y GLAD para renderizado en tiempo real. Diseñado para desarrollo profesional de juegos y aplicaciones gráficas.
 
 ## Uso Rápido
 
-1. **Doble clic en `build_and_run.bat`** o ejecuta `python build.py`
-2. El script compilará todo automáticamente y ejecutará el programa
-3. Verás una ventana OpenGL que se cierra al presionar ESC
+1. Compila el proyecto con CMake usando `python build.py` o desde el directorio raíz con:
+   ```bash
+   mkdir -p build && cmake -S . -B build && cmake --build build -- -j4
+   ```
+2. Ejecuta `bin/LabProg`.
+3. Si usas Codespaces/VNC, inicia `./VNC/start_vnc.sh` y accede al cliente noVNC en el puerto `6080`. Para input, haz clic en la ventana para dar foco.
 
 ## Estructura del Proyecto
 
-- **src/**: Contiene los archivos fuente del proyecto (main.cpp & *.cpp *.h).
-- **lib/**: Contiene las bibliotecas externas necesarias:
-  - **glad/**: Para cargar funciones de OpenGL.
-  - **glfw/**: Para crear ventanas y manejar entrada.
-  - **glm/**: Biblioteca de matemáticas para gráficos (Usada).
-  - **imgui/**: Interfaz de usuario inmediata (Usada para debug).
-  - **json/**: Biblioteca para JSON (Para futuro).
-  - **stb/**: Bibliotecas de imágenes y utilidades (Para futuro).
-  - **tinygltf/**: Para cargar modelos glTF (Inutil).
-  - **tinyobj/**: Para cargar objetos OBJ (Para futuro).
-- **bin/**: Directorio donde se genera el ejecutable compilado.
-- **VNC**: Carpeta donde se almacena todo noVNC para ejecutar el exe en web.
-- **assets/**: Para recursos como modelos, texturas, etc. (Vacio temporal mente).
-- **mingw64/**: Contiene el compilador MinGW64 y herramientas.
-- **build_and_run.bat**: Script batch para compilar y ejecutar automáticamente.
-- **build_and_run.ps1**: Script PowerShell para compilar y ejecutar automáticamente.
-- **build_and_run.sh**: Script linux para compilar y ejecutar automáticamente.
-- **compile.txt**: Contiene comandos de compilación manual.
+- **src/**: Código fuente del motor organizado en módulos:
+  - **core/**: Punto de entrada principal (main.cpp).
+  - **graphics/**: Renderizado y gráficos (ShaderProgram, Triangle, Camera).
+  - **input/**: Gestión de entrada (InputManager, Keyboard).
+  - **debug/**: Herramientas de debugging (DebugManager).
+- **third_party/**: Bibliotecas externas:
+  - **glad/**: Loader de funciones OpenGL.
+  - **glfw/**: Gestión de ventanas y entrada (del sistema).
+  - **glm/**: Matemáticas 3D.
+  - **imgui/**: Interfaz de usuario para debugging.
+  - **json/**: Parsing JSON.
+  - **stb/**: Utilidades de imágenes.
+  - **tinygltf/tinyobj**: Carga de modelos 3D.
+- **bin/**: Ejecutables compilados.
+- **VNC/**: Configuración para ejecución en entornos headless.
+- **assets/**: Recursos del juego (modelos, texturas, shaders).
+- **build/**: Archivos de compilación CMake.
 
 ## Compilación
 
-### Opción 1: Scripts Automáticos (Recomendado)
+### Compilación con CMake (Recomendada)
 
-**Windows Batch (.bat):**
-```cmd
-build_and_run.bat
-```
-
-**PowerShell (.ps1):**
-```powershell
-.\build_and_run.ps1
-```
-
-**Linux Shell (.sh):**
-```terminal
-chmod +x build_and_run.sh
-./build_and_run.sh
-```
-
-Estos scripts compilan GLFW automáticamente si no existe, compilan el proyecto y lo ejecutan, mostrando todos los logs.
-
-### Opción 2: Usando CMake (Manual)
-
-1. Crear directorio de build:
+1. Crear el directorio de build y generar la configuración:
 
 ```bash
-mkdir build
-cd build
+mkdir -p build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 ```
 
-1. Configurar con CMake:
+2. Compilar el proyecto:
 
 ```bash
-cmake ..
+cmake --build build -- -j4
 ```
 
-1. Compilar:
+3. Ejecutar el binario:
 
 ```bash
-make
+./bin/LabProg
 ```
 
-El ejecutable se generará en `bin/`.
+### Uso en VNC / Codespaces
 
-### Opción 3: Compilación Manual (Ver compile.txt)
+1. Compila el proyecto antes de iniciar VNC.
+2. Ejecuta el script VNC:
 
-Para compilar manualmente con g++, ver el archivo `compile.txt`.
+```bash
+./VNC/start_vnc.sh
+```
+
+3. Exponer el puerto `6080` y abre en el navegador:
+
+```bash
+http://localhost:6080/vnc.html?host=localhost&port=6080
+```
+
+### Opción alternativa: script Python
+
+También puedes usar el script `python build.py`, que ahora invoca CMake para configurar, compilar y ejecutar el proyecto.
 
 ## Explicación del Código
 

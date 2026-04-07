@@ -1,0 +1,26 @@
+# Build directories
+build/
+bin/
+*.exe
+*.dll
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# Dependencies (if any)
+node_modules/
+
+# Assets (optional, uncomment if needed)
+# assets/models/
+# assets/textures/

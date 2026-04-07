@@ -9,8 +9,9 @@
         "editor.defaultFormatter": "ms-vscode.cpptools"
     },
     "files.exclude": {
-        "**/.git": false,
-        "**/build": false,
-        "**/bin": false
+        "**/.git": true,
+        "**/build": true,
+        "**/bin": false,
+        "**/mingw64": true
     }
 }
