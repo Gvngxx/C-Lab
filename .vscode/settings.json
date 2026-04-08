@@ -10,7 +10,7 @@
     },
     "files.exclude": {
         "**/.git": true,
-        "**/build": true,
+        "**/build": false,
         "**/bin": false,
         "**/mingw64": true
     }

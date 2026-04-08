@@ -1,29 +1,26 @@
 #pragma once
 
-#include <string>
 #include <glad/gl.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Cube {
 public:
     Cube();
-    void Render(unsigned int shaderProgramID, glm::vec3 position, glm::vec3 size, glm::vec3 rotation = glm::vec3(1.0f, 0.0f, 0.0f));
-
+    void Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
     void CleanUp();
 
 private:
-    unsigned int VBO, VAO, EBO; // Vertex Buffer Object, Vertex Array Object
+    unsigned int VBO, VAO, EBO;
 };
 
 class Floor {
 public:
     Floor();
-    void Render(unsigned int shaderProgramID);
-
+    void Render(unsigned int shaderProgramID, const glm::mat4& baseModel, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
     void CleanUp();
 
 private:
-    unsigned int VBO, VAO, EBO; // Vertex Buffer Object, Vertex Array Object
+    unsigned int VBO, VAO, EBO;
 };

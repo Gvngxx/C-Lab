@@ -17,8 +17,23 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLFW REQUIRED glfw3)
+# Build third_party libraries
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+add_subdirectory(third_party/glfw)
+
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+add_subdirectory(third_party/assimp)
+
+set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
+set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(ALSOFT_INSTALL OFF CACHE BOOL "" FORCE)
+add_subdirectory(third_party/openal)
+
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -47,15 +62,15 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     src
     third_party/glad/include
-    ${GLFW_INCLUDE_DIRS}
+    third_party/glfw/include
     third_party/glm
     third_party/imgui
     third_party/imgui/misc
     third_party/imgui/backends
     third_party/json
     third_party/stb
-    third_party/tinygltf
-    third_party/tinyobj
+    third_party/assimp/include
+    third_party/openal/include
 )
 
 if(WIN32 AND MINGW)
@@ -65,7 +80,9 @@ if(WIN32 AND MINGW)
     )
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE
-        ${GLFW_LIBRARIES}
+        glfw
+        assimp::assimp
+        OpenAL::OpenAL
         OpenGL::GL
         Threads::Threads
         dl

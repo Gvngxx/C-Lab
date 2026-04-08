@@ -4,7 +4,6 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <cmath>
 #include <GLFW/glfw3.h>
 
 enum class CameraDirection {
@@ -32,14 +31,16 @@ public:
     float movementSpeed;
     float mouseSensitivity;
     float zoom;
-    bool isFreeze;
+
+    bool isFrozen;
 
     Camera(glm::vec3 position);
 
     void updateCameraDirection(double dx, double dy);
     void updateCameraPos(CameraDirection dir, double deltaTime);
     void updateCameraZoom(double dy);
-    void Freeze();
+
+    void Freze();
     void Unfreeze();
 
     glm::mat4 GetViewMatrix();

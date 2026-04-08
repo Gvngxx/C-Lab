@@ -47,12 +47,15 @@ int main() {
     }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    glEnable(GL_DEPTH_TEST);
+    // glEnable();
+
     glfwSetKeyCallback(window, Keyboard::KeyCallback);
     glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
     glfwSetMouseButtonCallback(window, Mouse::MouseButtonCallback);
+    // glfwSetScrollCallback(window, Mouse::WheelCallback);
     
-    // En VNC el cursor debe estar normal para que los eventos se reciban correctamente.
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     std::string vertexCode = readFile("assets/shaders/vertx.glsl");
     std::string fragmentCode = readFile("assets/shaders/frag.glsl");
@@ -70,10 +73,13 @@ int main() {
     DebugManager debug{window, &shader};
 
     Cube cube;
+    Floor floor;
+
+    // int MoveA = glGetAttribLocation(shader.id(), "Time");
 
     float deltatime = 0.0f;
     float lastFrame = 0.0f;
-    Mouse::scrollY = 0;
+    // Mouse::scrollY = 0;
 
     // Loop
     while (!glfwWindowShouldClose(window)) {
@@ -81,31 +87,38 @@ int main() {
         deltatime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        // Limpiar pantalla
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.bind();
 
-        // 2. ENVIAR MATRICES DENTRO DEL LOOP
         glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), 1280.0f / 720.0f, 0.1f, 100.0f);
-        shader.setMat4("projection", &projection[0][0]); 
+        shader.setMat4("projection", &projection[0][0]);
 
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("view", &view[0][0]);
 
-        glm::mat4 model = camera.GetViewMatrix();
+        glm::mat4 model = glm::mat4(1.0f);
         shader.setMat4("model", &model[0][0]);
 
         // ---- Input ----
         processInput(window, deltatime, camera);
         camera.updateCameraDirection(Mouse::getDX(), Mouse::getDY());
+        camera.updateCameraZoom(Mouse::scrollY);
 
         // --- Render ---
         debug.beginFrame();
         debug.render();
 
-        cube.Render(shader.id(), glm::vec3(0.0f, -1.0f, -4.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(glfwGetTime() * 50.0f, 0.0f, 0.0f));
+        cube.Render(shader.id(), model,
+            0.0f, -1.0f, -4.0f,      // Pos
+            1.0f, 1.0f, 1.0f,       // Size
+            0.0f);                 // rotation
+
+        floor.Render(shader.id(), model,
+            0.0f, -2.0f, 0.0f,        // Pos
+            1.0f, 1.0f, 1.0f,        // Size
+            90.0f);                 // rotation
 
         debug.endFrame();
         glfwSwapBuffers(window);
@@ -113,6 +126,7 @@ int main() {
     }
 
     cube.CleanUp();
+    floor.CleanUp();
     shader.unbind();
     shader.CleanUp();
     glfwDestroyWindow(window);
@@ -125,17 +139,17 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    if(Keyboard::keys[GLFW_KEY_ESCAPE]) {
         glfwSetWindowShouldClose(window, true);
     }
 
-    if(glfwGetKey(window, GLFW_KEY_F1) == GLFW_TRUE) {
-        camera.Freeze();
+    if(Keyboard::keys[GLFW_KEY_F1]) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        camera.Freze();
     }
-    if(glfwGetKey(window, GLFW_KEY_F2) == GLFW_TRUE) {
-        camera.Unfreeze();
+    if(Keyboard::keys[GLFW_KEY_F2]) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        camera.Unfreeze();
     }
 
     if(Keyboard::keys[GLFW_KEY_W])
@@ -146,7 +160,7 @@ void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
         camera.updateCameraPos(CameraDirection::LEFT, deltaTime);
     if(Keyboard::keys[GLFW_KEY_S])
         camera.updateCameraPos(CameraDirection::BACKWARD, deltaTime);
-    if(Keyboard::keys[GLFW_KEY_Q]) 
+    if(Keyboard::keys[GLFW_KEY_Q])
         camera.updateCameraPos(CameraDirection::UP, deltaTime);
     if(Keyboard::keys[GLFW_KEY_Z])
         camera.updateCameraPos(CameraDirection::DOWN, deltaTime);

@@ -5,13 +5,10 @@
 
 class Keyboard {
 public:
-    // Almacenamos el estado de todas las teclas (256 o 1024)
     static bool keys[1024];
 
-    // Callback para teclas
     static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     
-    // Función de utilidad para saber si una tecla está presionada
     static bool key(int key);
 };
 

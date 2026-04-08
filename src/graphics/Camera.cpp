@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-
 Camera::Camera(glm::vec3 position)
     : cameraPos(position),
     worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
@@ -10,12 +9,14 @@ Camera::Camera(glm::vec3 position)
     mouseSensitivity(0.1f),
     zoom(45.0f),
     cameraFront(glm::vec3(0.0f, 0.0f, -1.0f)),
-    isFreeze(false)
+    isFrozen(false)
 {
     updateCameraVectors();
 }
 
 void Camera::updateCameraDirection(double dx, double dy) {
+    if (isFrozen) return;
+
     yaw += dx * mouseSensitivity;
     pitch += dy * mouseSensitivity;
 
@@ -27,7 +28,7 @@ void Camera::updateCameraDirection(double dx, double dy) {
     updateCameraVectors();
 }
 void Camera::updateCameraPos(CameraDirection dir, double deltaTime) {
-    if (isFreeze) return; 
+    if (isFrozen) return;
 
     float velocity = movementSpeed * deltaTime;
 
@@ -68,10 +69,10 @@ void Camera::updateCameraVectors() {
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
 }
 
-void Camera::Freeze() {
-    isFreeze = true;
+void Camera::Freze() {
+    isFrozen = true;
 }
 
 void Camera::Unfreeze() {
-    isFreeze = false;
+    isFrozen = false;
 }

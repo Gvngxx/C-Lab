@@ -1,0 +1,20 @@
+====================================================================
+                COMPILACION DEL PROYECTO C++ CON OPENGL
+====================================================================
+
+REQUISITOS:
+- MinGW64 (g++, gcc, cmake, mingw32-make)
+- CMake
+- GLFW debe compilarse primero
+
+====================================================================
+Ejecutar VNC
+====================================================================
+
+clear && ./VNC/start_vnc.sh
+
+====================================================================
+Cmake
+====================================================================
+
+mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Maked"

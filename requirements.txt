@@ -1,0 +1,24 @@
+# System dependencies (apt packages)
+# Run: sudo apt update && sudo apt install -y <packages>
+cmake
+build-essential
+libglfw3-dev
+libgl1-mesa-dev
+libx11-dev
+libxrandr-dev
+libxinerama-dev
+libxcursor-dev
+libxi-dev
+xvfb
+x11vnc
+python3-pip
+git
+
+# Python packages
+# Run: pip install <packages>
+websockify
+
+# Additional notes:
+# - Clone noVNC: git clone https://github.com/novnc/noVNC.git VNC/noVNC
+# - To build the project: mkdir build && cd build && cmake .. && make
+# - To run VNC: ./VNC/start_vnc.sh

@@ -1,52 +1,50 @@
-#include "Models.h"
+#include "Cube.h"
 #include <iostream>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 Cube::Cube() {
-    // Vertices for a cube
-    float vertices[] = {
-        // Front face
-        -0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        // Back face
-        -0.5f, -0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-        // Left face
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        // Right face
-         0.5f,  0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-        // Top face
-        -0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f, -0.5f,
-        // Bottom face
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f
+    // === VÉRTICES DEL CUBO ===
+    // Cada vértice tiene (X, Y, Z)
+    // El cubo va de -0.5 a +0.5 en cada eje
+    float vertx[] = {
+        // Cara frontal (Z = +0.5)
+        -0.5f, -0.5f,  0.5f,  // Vértice 0
+        0.5f, -0.5f,  0.5f,  // Vértice 1
+        0.5f,  0.5f,  0.5f,  // Vértice 2
+        -0.5f,  0.5f,  0.5f,  // Vértice 3
+
+        // Cara trasera (Z = -0.5)
+        -0.5f, -0.5f, -0.5f,  // Vértice 4
+        0.5f, -0.5f, -0.5f,  // Vértice 5
+        0.5f,  0.5f, -0.5f,  // Vértice 6
+        -0.5f,  0.5f, -0.5f   // Vértice 7
     };
 
-    // Indices for the cube (36 indices for 12 triangles)
+    // === ÍNDICES DEL CUBO ===
+    // Cada cara se divide en 2 triángulos → 6 caras × 2 = 12 triángulos × 3 vértices = 36 índices
     unsigned int indices[] = {
-        0, 1, 2, 2, 3, 0,       // front
-        4, 5, 6, 6, 7, 4,       // back
-        8, 9, 10, 10, 11, 8,    // left
-        12, 13, 14, 14, 15, 12, // right
-        16, 17, 18, 18, 19, 16, // top
-        20, 21, 22, 22, 23, 20  // bottom
+        // Cara frontal (Z = +0.5) — vértices 0,1,2,3
+        0, 1, 2,  // Triángulo 1
+        2, 3, 0,  // Triángulo 2
+
+        // Cara trasera (Z = -0.5) — vértices 4,5,6,7
+        5, 4, 7,  // Triángulo 1 (orden inverso para que no se vea al revés)
+        7, 6, 5,  // Triángulo 2
+
+        // Cara superior (Y = +0.5) — vértices 3,2,6,7
+        3, 2, 6,  // Triángulo 1
+        6, 7, 3,  // Triángulo 2
+
+        // Cara inferior (Y = -0.5) — vértices 0,1,5,4
+        0, 4, 5,  // Triángulo 1
+        5, 1, 0,  // Triángulo 2
+
+        // Cara derecha (X = +0.5) — vértices 1,5,6,2
+        1, 2, 6,  // Triángulo 1
+        6, 5, 1,  // Triángulo 2
+
+        // Cara izquierda (X = -0.5) — vértices 0,4,7,3
+        0, 3, 7,  // Triángulo 1
+        7, 4, 0   // Triángulo 2
     };
 
     glGenBuffers(1, &VBO);
@@ -55,7 +53,7 @@ Cube::Cube() {
     glBindVertexArray(VAO); // Se guardan las configs que yo ago
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertx), vertx, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -65,28 +63,32 @@ Cube::Cube() {
     glBindVertexArray(0); // Se deja de guardar configs
 }
 
-void Cube::Render(unsigned int shaderProgramID, glm::vec3 position, glm::vec3 size, glm::vec3 rotation) {
-    glUseProgram(shaderProgramID); // Conecta el shader al programa
+void Cube::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation) {
+    
+    glm::mat4 NGenModel = modelMatrix;
+    NGenModel = glm::translate(NGenModel, glm::vec3(x, y, z));
+    NGenModel = glm::scale(NGenModel, glm::vec3(SizeX, SizeY, SizeZ));
+    NGenModel = glm::rotate(NGenModel, glm::radians(rotation), glm::vec3(0.0f,  1.0f,  0.0f));
+    
+    // Usar el programa shader
+    glUseProgram(shaderProgramID);
 
-    // Compute model matrix
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, position);
-    model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::scale(model, size);
+    // Activar el VAO
+    glBindVertexArray(VAO);
 
-    // Set model uniform
-    int modelLoc = glGetUniformLocation(shaderProgramID, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    // === ENVIAR LA MATRIZ MODEL ===
+    // Esta es la clave para mover el cubo
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(NGenModel));
 
-    glBindVertexArray(VAO); 
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // Dibuja los Arrays
+    // === DIBUJAR EL CUBO ===
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+    // Desactivar el VAO
     glBindVertexArray(0);
 }
 
 void Cube::CleanUp() {
-    glDeleteVertexArrays(1, &VAO); // Se borra el VAO
-    glDeleteBuffers(1, &VBO); // Se borra el VBO
-    glDeleteBuffers(1, &EBO); // Se borra el EBO
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
