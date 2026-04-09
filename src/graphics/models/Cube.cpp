@@ -1,22 +1,26 @@
-#include "Cube.h"
+#include "../../Models.h"
+#include "../../TextureLoader.h"
 #include <iostream>
 
-Cube::Cube() {
+Cube::Cube(const std::string& texturePath) : textureID(0) {
+    // Load texture
+    textureID = TextureLoader::LoadTexture(texturePath);
+
     // === VÉRTICES DEL CUBO ===
-    // Cada vértice tiene (X, Y, Z)
+    // Cada vértice tiene (X, Y, Z, U, V)
     // El cubo va de -0.5 a +0.5 en cada eje
     float vertx[] = {
         // Cara frontal (Z = +0.5)
-        -0.5f, -0.5f,  0.5f,  // Vértice 0
-        0.5f, -0.5f,  0.5f,  // Vértice 1
-        0.5f,  0.5f,  0.5f,  // Vértice 2
-        -0.5f,  0.5f,  0.5f,  // Vértice 3
+        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  // Vértice 0
+        0.5f, -0.5f,  0.5f, 1.0f, 0.0f,  // Vértice 1
+        0.5f,  0.5f,  0.5f, 1.0f, 1.0f,  // Vértice 2
+        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f,  // Vértice 3
 
         // Cara trasera (Z = -0.5)
-        -0.5f, -0.5f, -0.5f,  // Vértice 4
-        0.5f, -0.5f, -0.5f,  // Vértice 5
-        0.5f,  0.5f, -0.5f,  // Vértice 6
-        -0.5f,  0.5f, -0.5f   // Vértice 7
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  // Vértice 4
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f,  // Vértice 5
+        0.5f,  0.5f, -0.5f, 1.0f, 1.0f,  // Vértice 6
+        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f   // Vértice 7
     };
 
     // === ÍNDICES DEL CUBO ===
@@ -57,9 +61,11 @@ Cube::Cube() {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     glBindVertexArray(0); // Se deja de guardar configs
 }
 
@@ -72,6 +78,11 @@ void Cube::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, fl
     
     // Usar el programa shader
     glUseProgram(shaderProgramID);
+
+    // Bind texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glUniform1i(glGetUniformLocation(shaderProgramID, "texture1"), 0);
 
     // Activar el VAO
     glBindVertexArray(VAO);
@@ -91,4 +102,7 @@ void Cube::CleanUp() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+    if (textureID != 0) {
+        TextureLoader::UnloadTexture(textureID);
+    }
 }

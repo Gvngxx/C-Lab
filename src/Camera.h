@@ -16,6 +16,12 @@ enum class CameraDirection {
     DOWN
 };
 
+enum class CameraMode {
+    FIRST_PERSON,
+    THIRD_PERSON,
+    SPECTATOR
+};
+
 class Camera {
 public:
     glm::vec3 cameraPos;
@@ -33,12 +39,17 @@ public:
     float zoom;
 
     bool isFrozen;
+    CameraMode mode;
+    glm::vec3 targetPos; // For third person, position to look at
 
     Camera(glm::vec3 position);
 
     void updateCameraDirection(double dx, double dy);
     void updateCameraPos(CameraDirection dir, double deltaTime);
     void updateCameraZoom(double dy);
+
+    void SetMode(CameraMode newMode);
+    void SetTarget(const glm::vec3& target);
 
     void Freze();
     void Unfreeze();

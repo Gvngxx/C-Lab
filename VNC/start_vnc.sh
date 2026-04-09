@@ -7,6 +7,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+export PATH="$HOME/.local/bin:$PATH"
+
 XVFB_DISPLAY=":1"
 RESOLUTION="1280x720x24"
 VNC_PORT=5900
@@ -25,7 +27,7 @@ if ! command -v Xvfb >/dev/null; then
   sudo apt-get install -y xvfb x11vnc python3-pip git
 fi
 
-if ! command -v websockify >/dev/null; then
+if ! command -v websockify >/dev/null || ! python3 -c "import websockify" >/dev/null 2>&1; then
   python3 -m pip install --user websockify
   export PATH="$HOME/.local/bin:$PATH"
 fi
@@ -34,6 +36,10 @@ fi
 if [ ! -d "$ROOT/VNC/noVNC" ]; then
   echo "2) Clonando noVNC..."
   git clone https://github.com/novnc/noVNC.git "$ROOT/VNC/noVNC"
+fi
+
+if [ -f "$ROOT/VNC/noVNC/utils/novnc_proxy" ]; then
+  chmod +x "$ROOT/VNC/noVNC/utils/novnc_proxy"
 fi
 
 # Arrancamos Xvfb en segundo plano
@@ -59,17 +65,21 @@ else
   fi
 fi
 
-# Arrancamos websockify (noVNC)
-if pgrep -f "websockify $WEB_PORT" >/dev/null; then
-  echo "websockify ya está corriendo en puerto $WEB_PORT"
+# Arrancamos noVNC proxy
+if pgrep -f "novnc_proxy.*$WEB_PORT" >/dev/null || pgrep -f "websockify.*$WEB_PORT" >/dev/null; then
+  echo "noVNC/websockify ya está corriendo en puerto $WEB_PORT"
 else
-  echo "5) Arrancando websockify en $WEB_PORT -> localhost:$VNC_PORT"
-  websockify --web "$ROOT/VNC/noVNC" $WEB_PORT localhost:$VNC_PORT &
+  echo "5) Arrancando noVNC proxy en $WEB_PORT -> localhost:$VNC_PORT"
+  if [ -x "$ROOT/VNC/noVNC/utils/novnc_proxy" ]; then
+    "$ROOT/VNC/noVNC/utils/novnc_proxy" --listen "$WEB_PORT" --vnc "localhost:$VNC_PORT" --web "$ROOT/VNC/noVNC" &
+  else
+    websockify --web "$ROOT/VNC/noVNC" $WEB_PORT localhost:$VNC_PORT &
+  fi
   sleep 1
   if ss -ltnp 2>/dev/null | grep -q ":$WEB_PORT"; then
-    echo "websockify escuchando en el puerto $WEB_PORT"
+    echo "websockify/noVNC proxy escuchando en el puerto $WEB_PORT"
   else
-    echo "Advertencia: websockify no parece estar escuchando en $WEB_PORT" >&2
+    echo "Advertencia: websockify/noVNC proxy no parece estar escuchando en $WEB_PORT" >&2
   fi
 fi
 

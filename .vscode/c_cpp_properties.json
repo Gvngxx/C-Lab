@@ -8,9 +8,9 @@
                 "${workspaceFolder}/lib/glm",
                 "${workspaceFolder}/lib/imgui",
                 "${workspaceFolder}/lib/json",
+                "${workspaceFolder}/lib/openal/include",
+                "${workspaceFolder}/lib/assimp/include",
                 "${workspaceFolder}/lib/stb",
-                "${workspaceFolder}/lib/tinygltf",
-                "${workspaceFolder}/lib/tinyobj",
                 "${workspaceFolder}/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include",
                 "${workspaceFolder}/mingw64/x86_64-w64-mingw32/include"
             ],

@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include "../../Models.h"
 #include <iostream>
 
 Floor::Floor() {
@@ -53,4 +53,13 @@ void Floor::CleanUp() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+}
+
+bool Floor::CheckAABBCollision(const glm::vec3& point, float halfSize) const {
+    // Simple AABB collision check
+    // Floor is at y=0, assume it's a plane, but for AABB, check against the floor's bounding box
+    // For simplicity, assume floor is from -1 to 1 in x and z, at y=0
+    return (point.x >= -1.0f && point.x <= 1.0f &&
+            point.z >= -1.0f && point.z <= 1.0f &&
+            point.y - halfSize <= 0.0f); // Touching or below floor
 }

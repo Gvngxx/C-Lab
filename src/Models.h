@@ -7,12 +7,12 @@
 
 class Cube {
 public:
-    Cube();
+    Cube(const std::string& texturePath);
     void Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
     void CleanUp();
 
 private:
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO, EBO, textureID;
 };
 
 class Floor {
@@ -20,6 +20,7 @@ public:
     Floor();
     void Render(unsigned int shaderProgramID, const glm::mat4& baseModel, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
     void CleanUp();
+    bool CheckAABBCollision(const glm::vec3& point, float halfSize) const;
 
 private:
     unsigned int VBO, VAO, EBO;

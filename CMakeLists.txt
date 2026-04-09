@@ -27,12 +27,13 @@ set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 add_subdirectory(third_party/assimp)
 
 set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
 set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(ALSOFT_INSTALL OFF CACHE BOOL "" FORCE)
-add_subdirectory(third_party/openal)
+# add_subdirectory(third_party/openal)
 
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
@@ -82,7 +83,6 @@ else()
     target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
         assimp::assimp
-        OpenAL::OpenAL
         OpenGL::GL
         Threads::Threads
         dl

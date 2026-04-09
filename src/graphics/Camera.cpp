@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "../Camera.h"
 
 Camera::Camera(glm::vec3 position)
     : cameraPos(position),
@@ -9,7 +9,9 @@ Camera::Camera(glm::vec3 position)
     mouseSensitivity(0.1f),
     zoom(45.0f),
     cameraFront(glm::vec3(0.0f, 0.0f, -1.0f)),
-    isFrozen(false)
+    isFrozen(false),
+    mode(CameraMode::FIRST_PERSON),
+    targetPos(position)
 {
     updateCameraVectors();
 }
@@ -56,7 +58,18 @@ void Camera::updateCameraZoom(double dy) {
 }
 
 glm::mat4 Camera::GetViewMatrix() {
-    return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    if (mode == CameraMode::THIRD_PERSON) {
+        // Camera looks at target from behind
+        glm::vec3 offset = glm::vec3(0.0f, 2.0f, 5.0f); // Adjust as needed
+        cameraPos = targetPos - cameraFront * offset.z + glm::vec3(0.0f, offset.y, 0.0f);
+        return glm::lookAt(cameraPos, targetPos, cameraUp);
+    } else if (mode == CameraMode::SPECTATOR) {
+        // Free camera
+        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    } else {
+        // First person
+        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    }
 }
 
 void Camera::updateCameraVectors() {
@@ -75,4 +88,12 @@ void Camera::Freze() {
 
 void Camera::Unfreeze() {
     isFrozen = false;
+}
+
+void Camera::SetMode(CameraMode newMode) {
+    mode = newMode;
+}
+
+void Camera::SetTarget(const glm::vec3& target) {
+    targetPos = target;
 }

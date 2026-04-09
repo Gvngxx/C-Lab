@@ -3,11 +3,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
-#include "ShaderProgram.h"
-#include "Models.h"
-#include "Camera.h"
-#include "Keyboard.h"
-#include "DebugManager.h"
+#include "../ShaderProgram.h"
+#include "../Models.h"
+#include "../Camera.h"
+#include "../Keyboard.h"
+#include "../DebugManager.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
