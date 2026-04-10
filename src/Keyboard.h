@@ -29,4 +29,5 @@ public:
     // Funciones de utilidad
     static double getDX();
     static double getDY();
+    static double getScrollY();
 };

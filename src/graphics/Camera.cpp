@@ -1,4 +1,5 @@
 #include "../Camera.h"
+#include <cmath>
 
 Camera::Camera(glm::vec3 position)
     : cameraPos(position),
@@ -18,6 +19,11 @@ Camera::Camera(glm::vec3 position)
 
 void Camera::updateCameraDirection(double dx, double dy) {
     if (isFrozen) return;
+
+    // Ignore extreme jumps from remote desktop or touchpad noise.
+    if (std::abs(dx) > 500.0 || std::abs(dy) > 500.0) {
+        return;
+    }
 
     yaw += dx * mouseSensitivity;
     pitch += dy * mouseSensitivity;

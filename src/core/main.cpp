@@ -8,9 +8,11 @@
 #include "../Camera.h"
 #include "../Keyboard.h"
 #include "../DebugManager.h"
+#include "../entities/Player.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cmath>
 
 std::string readFile(const char* filePath) {
@@ -53,15 +55,21 @@ int main() {
     glfwSetKeyCallback(window, Keyboard::KeyCallback);
     glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
     glfwSetMouseButtonCallback(window, Mouse::MouseButtonCallback);
-    // glfwSetScrollCallback(window, Mouse::WheelCallback);
     
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // Use normal cursor by default so the camera works over VNC and on touchpads.
+    // Press F2 to enable raw mouse capture if you want local relative motion.
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     std::string vertexCode = readFile("assets/shaders/vertx.glsl");
     std::string fragmentCode = readFile("assets/shaders/frag.glsl");
     ShaderProgram shader(vertexCode.c_str(), fragmentCode.c_str());
 
-    Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+    Camera camera(glm::vec3(0.0f, 2.0f, 8.0f));
+    camera.SetMode(CameraMode::THIRD_PERSON);
+
+    Cube cube("assets/textures/Texture.png");
+    Floor floor;
+    Player player("assets/textures/Texture.png");
 
     // --- MATRIZ DE PROYECCIÓN ---
     // Define el campo de visión (45 grados), el ratio de aspecto y qué tan cerca/lejos vemos.
@@ -69,17 +77,11 @@ int main() {
 
     // --- MATRIZ DE VISTA ---
     // Obtiene la posición y dirección actual de la cámara
-    glm::mat4 view = camera.GetViewMatrix();\
+    glm::mat4 view = camera.GetViewMatrix();
     DebugManager debug{window, &shader};
-
-    Cube cube;
-    Floor floor;
-
-    // int MoveA = glGetAttribLocation(shader.id(), "Time");
 
     float deltatime = 0.0f;
     float lastFrame = 0.0f;
-    // Mouse::scrollY = 0;
 
     // Loop
     while (!glfwWindowShouldClose(window)) {
@@ -103,8 +105,16 @@ int main() {
 
         // ---- Input ----
         processInput(window, deltatime, camera);
-        camera.updateCameraDirection(Mouse::getDX(), Mouse::getDY());
-        camera.updateCameraZoom(Mouse::scrollY);
+        double mouseDX = Mouse::getDX();
+        double mouseDY = Mouse::getDY();
+        if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED || Mouse::buttons[GLFW_MOUSE_BUTTON_LEFT]) {
+            camera.updateCameraDirection(mouseDX, mouseDY);
+        }
+        camera.updateCameraZoom(Mouse::getScrollY());
+
+        // Update the player and keep the camera following it.
+        player.Update(deltatime);
+        player.SetCameraTarget(camera);
 
         // --- Render ---
         debug.beginFrame();
@@ -119,6 +129,8 @@ int main() {
             0.0f, -2.0f, 0.0f,        // Pos
             1.0f, 1.0f, 1.0f,        // Size
             90.0f);                 // rotation
+
+        player.Render(shader.id(), model);
 
         debug.endFrame();
         glfwSwapBuffers(window);
@@ -146,10 +158,12 @@ void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
     if(Keyboard::keys[GLFW_KEY_F1]) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         camera.Freze();
+        Mouse::firstMouse = true;
     }
     if(Keyboard::keys[GLFW_KEY_F2]) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         camera.Unfreeze();
+        Mouse::firstMouse = true;
     }
 
     if(Keyboard::keys[GLFW_KEY_W])
@@ -164,4 +178,18 @@ void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
         camera.updateCameraPos(CameraDirection::UP, deltaTime);
     if(Keyboard::keys[GLFW_KEY_Z])
         camera.updateCameraPos(CameraDirection::DOWN, deltaTime);
+
+    // Keyboard camera rotation fallback for VNC / trackpad input
+    if(Keyboard::keys[GLFW_KEY_LEFT])
+        camera.updateCameraDirection(-100.0 * deltaTime, 0.0);
+    if(Keyboard::keys[GLFW_KEY_RIGHT])
+        camera.updateCameraDirection(100.0 * deltaTime, 0.0);
+    if(Keyboard::keys[GLFW_KEY_UP])
+        camera.updateCameraDirection(0.0, 100.0 * deltaTime);
+    if(Keyboard::keys[GLFW_KEY_DOWN])
+        camera.updateCameraDirection(0.0, -100.0 * deltaTime);
+    if(Keyboard::keys[GLFW_KEY_PAGE_UP])
+        camera.updateCameraZoom(-1.0 * deltaTime * 50.0);
+    if(Keyboard::keys[GLFW_KEY_PAGE_DOWN])
+        camera.updateCameraZoom(1.0 * deltaTime * 50.0);
 }

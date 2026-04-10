@@ -68,3 +68,9 @@ double Mouse::getDY() {
     dy = 0;
     return _dy;
 }
+
+double Mouse::getScrollY() {
+    double _scrollY = scrollY;
+    scrollY = 0;
+    return _scrollY;
+}

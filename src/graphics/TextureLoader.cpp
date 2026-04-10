@@ -1,5 +1,7 @@
-#include "TextureLoader.h"
+#include "../TextureLoader.h"
 #include <iostream>
+
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 unsigned int TextureLoader::LoadTexture(const std::string& path, int targetWidth, int targetHeight) {
