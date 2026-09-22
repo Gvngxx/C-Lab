@@ -8,9 +8,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-struct Vertice {
-    float posicion[3];
-    float coordsTextura[2];
+struct Vertice { 
+    float posicion[3]; 
+    float normal[3];
+    float coordsTextura[2]; 
 };
 
 struct DMalla {

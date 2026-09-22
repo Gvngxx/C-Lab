@@ -106,6 +106,8 @@ void Cube::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, fl
     // Esta es la clave para mover el cubo
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(NGenModel));
 
+    return;
+
     // === DIBUJAR EL CUBO ===
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 

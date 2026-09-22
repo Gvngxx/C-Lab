@@ -1,20 +1,21 @@
 #include "../Player.h"
-#include "../../Models.h"
 #include "../../Camera.h"
 #include <iostream>
 
-Player::Player(const std::string& texturePath) : cube(nullptr), position(0.0f, 0.0f, 0.0f), velocity(0.0f), onGround(true), gravity(-9.8f), jumpForce(5.0f), groundY(0.0f) {
-    cube = new Cube(texturePath);
+Player::Player(const std::string& texturePath) : skin(nullptr), position(0.0f, 0.0f, 0.0f), velocity(0.0f), onGround(true), gravity(-9.8f), jumpForce(5.0f), groundY(0.0f) {
+    skin = new Skin(texturePath);
 }
 
 Player::~Player() {
-    if (cube) {
-        cube->CleanUp();
-        delete cube;
+    if (skin) {
+        skin->CleanUp();
+        delete skin;
     }
 }
 
 void Player::Update(float deltaTime) {
+    Skin::GetPosition(position);
+
     // Apply gravity
     if (!onGround) {
         velocity.y += gravity * deltaTime;
@@ -38,8 +39,8 @@ void Player::Update(float deltaTime) {
 }
 
 void Player::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix) {
-    if (cube) {
-        cube->Render(shaderProgramID, modelMatrix, position.x, position.y, position.z, 1.0f, 1.0f, 1.0f, 0.0f);
+    if (skin) {
+        skin->Render(shaderProgramID, modelMatrix, position.x, position.y, position.z, 1.0f, 1.0f, 1.0f, 0.0f);
     }
 }
 

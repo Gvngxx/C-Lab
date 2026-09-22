@@ -10,7 +10,13 @@ DMalla Reader::Import(const std::string& ruta) {
     DMalla resultado;
     Assimp::Importer importer;
     
-    const aiScene* scene = importer.ReadFile(ruta, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(
+    ruta,
+    aiProcess_Triangulate |
+    aiProcess_FlipUVs |
+    aiProcess_GenSmoothNormals
+    );
+    
     if (!scene || !scene->mRootNode) {
         std::cerr << "Error Assimp: " << importer.GetErrorString() << std::endl;
         return resultado;
@@ -27,6 +33,10 @@ DMalla Reader::Import(const std::string& ruta) {
             v.posicion[0] = mallaAssimp->mVertices[i].x;
             v.posicion[1] = mallaAssimp->mVertices[i].y;
             v.posicion[2] = mallaAssimp->mVertices[i].z;
+
+            v.normal[0] = mallaAssimp->mNormals[i].x;
+            v.normal[1] = mallaAssimp->mNormals[i].y;
+            v.normal[2] = mallaAssimp->mNormals[i].z;
 
             if (mallaAssimp->mTextureCoords[0]) {
                 v.coordsTextura[0] = mallaAssimp->mTextureCoords[0][i].x;

@@ -23,13 +23,35 @@ void Render::Conf(const DMalla& malla) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, malla.indices.size() * sizeof(unsigned int), &malla.indices[0], GL_STATIC_DRAW);
 
-    // Atributo 0: Posición (X, Y, Z)
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)0);
+    glVertexAttribPointer(
+        0,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        sizeof(Vertice),
+        (void*)offsetof(Vertice, posicion)
+    );
 
-    // Atributo 1: Coordenadas UV de Textura (U, V)
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)offsetof(Vertice, coordsTextura));
+    glVertexAttribPointer(
+        1,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        sizeof(Vertice),
+        (void*)offsetof(Vertice, normal)
+    );
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+        2,
+        2,
+        GL_FLOAT,
+        GL_FALSE,
+        sizeof(Vertice),
+        (void*)offsetof(Vertice, coordsTextura)
+    );
 
     glBindVertexArray(0);
 }

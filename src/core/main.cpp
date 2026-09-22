@@ -77,7 +77,8 @@ int main() {
     // Pizo (No tocar)
     Floor floor("assets/textures/Texture.png");
 
-    // Jugador
+    // Jugador +
+    Skin skin("assets/textures/red.png");
     Player player("assets/textures/red.png");
 
     // --- MATRIZ DE PROYECCIÓN ---
@@ -136,6 +137,10 @@ int main() {
             0.0f);                 // rotation
         testObj.Draw(); // Target para dibujar el objeto de arriba
 
+        skin.Render(shader.id(), model,
+            1.0f, 1.0f, 1.0f,       // Size
+            0.0f);                 // rotation
+
         // Render del pizo (No tocar)
         floor.Render(shader.id(), model,
             0.0f, -0.51f, 0.0f,        // Pos
@@ -151,6 +156,7 @@ int main() {
     }
 
     cube.CleanUp();
+    skin.CleanUp();
     floor.CleanUp();
     shader.unbind();
     shader.CleanUp();
