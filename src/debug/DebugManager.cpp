@@ -1,4 +1,7 @@
+#include "../ShaderProgram.h"
+#include "../VersionManager.h"
 #include "../DebugManager.h"
+
 #include <iostream>
 
 DebugManager::DebugManager(GLFWwindow* window, ShaderProgram* shader)
@@ -39,6 +42,7 @@ void DebugManager::render() {
     ImGui::SetNextWindowPos(ImVec2(8, 8), ImGuiCond_Appearing);
     ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing);
 
+    // Animation
     char buf[128];
     sprintf(buf, "Debug Menu %c###AnimatedTitle", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) % 4]);
 
@@ -47,7 +51,7 @@ void DebugManager::render() {
     // Obtenemos el ancho disponible para que los elementos sepan cuánto espacio tienen
     float contentWidth = ImGui::GetContentRegionAvail().x;
 
-    // -- AQUÍ MOSTRAMOS INFORMACIÓN DEl RENDIMIENTO --
+    // -- INFORMACION DEl RENDIMIENTO --
     if (ImGui::CollapsingHeader("Rendimiento", ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::TextWrapped("FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::TextWrapped("CPU Usage: %.1f%%", ImGui::GetIO().Framerate > 0 ? (100.0f / ImGui::GetIO().Framerate) : 0.0f);
@@ -55,7 +59,7 @@ void DebugManager::render() {
     }
     ImGui::Separator();
 
-    // -- AQUÍ MOSTRAMOS INFORMACIÓN DE VENTANA E INPUT --
+    // -- INFORMACION DE VENTANA E INPUT --
     if (ImGui::CollapsingHeader("Window & Input", ImGuiTreeNodeFlags_None)) {
         ImGui::TextWrapped("Window Size: %.0f x %.0f", ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
 
@@ -73,16 +77,24 @@ void DebugManager::render() {
     }
     ImGui::Separator();
 
-    // -- AQUÍ MOSTRAMOS INFORMACIÓN DEl SHADER --
+    // -- INFORMACION DEl SHADER --
     if (ImGui::CollapsingHeader("Shaders", ImGuiTreeNodeFlags_None)) {
         if (ImGui::Checkbox("Modo Wireframe", &wireframeMode)) {
             glPolygonMode(GL_FRONT_AND_BACK, wireframeMode ? GL_LINE : GL_FILL);
         }
     }
+    ImGui::Separator();
 
-    // -- AQUÍ MOSTRAMOS LA DEMO Y EXTRAS --
+    // -- INFORMATION --
+    if (ImGui::CollapsingHeader("Info", ImGuiTreeNodeFlags_None)) {
+        ImGui::Text("Version: %s", Version::GetVer().c_str());
+        ImGui::Text("Version ImGui: %s", ImGui::GetVersion());
+    }
+    ImGui::Separator();
+
+    // -- SHOW LA DEMO Y EXTRAS --
     if (ImGui::CollapsingHeader("Extra", ImGuiTreeNodeFlags_None)) {
-        if (ImGui::Checkbox("Show Demo", &showDemoWindow)) {
+        if (ImGui::Checkbox("Tools", &showDemoWindow)) {
             ImGui::ShowDemoWindow(&showDemoWindow);
         } else {
             if (showDemoWindow) {

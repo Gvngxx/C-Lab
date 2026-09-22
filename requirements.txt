@@ -17,8 +17,9 @@ git
 # Python packages
 # Run: pip install <packages>
 websockify
+colorama
 
 # Additional notes:
 # - Clone noVNC: git clone https://github.com/novnc/noVNC.git VNC/noVNC
-# - To build the project: mkdir build && cd build && cmake .. && make
+# - To build the project look the compile.txt file
 # - To run VNC: ./VNC/start_vnc.sh

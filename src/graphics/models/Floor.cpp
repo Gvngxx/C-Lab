@@ -1,13 +1,17 @@
 #include "../../Models.h"
+#include "../../TextureLoader.h"
 #include <iostream>
 
-Floor::Floor() {
+Floor::Floor(const std::string& texturePath) : textureID(0) {
+    // Delcarar Texturas
+    textureID = TextureLoader::LoadTexture(texturePath);
+
     // === VÉRTICES DEL CUBO ===
     // Cada vértice tiene (X, Y, Z)
     float vertx[] = {
         -1.0f, -1.0f,  0.0f,  // Vértice 0
         1.0f, -1.0f,  0.0f,  // Vértice 1
-        1.0f,  1.0f,  0.0f,  // Vértice 2
+        1.0f,  1.00f,  0.0f,  // Vértice 2
         -1.0f,  1.0f,  0.0f   // Vértice 3
     };
 
@@ -43,6 +47,12 @@ void Floor::Render(unsigned int shaderProgramID, const glm::mat4& baseModel, flo
     NGenModel = glm::rotate(NGenModel, glm::radians(rotation), glm::vec3(1.0f,  0.0f,  0.0f));
 
     glUseProgram(shaderProgramID);
+
+    // Bind texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glUniform1i(glGetUniformLocation(shaderProgramID, "texture1"), 0);
+
     glBindVertexArray(VAO);
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(NGenModel));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -53,6 +63,9 @@ void Floor::CleanUp() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+    if (textureID != 0) {
+        TextureLoader::UnloadTexture(textureID);
+    }
 }
 
 bool Floor::CheckAABBCollision(const glm::vec3& point, float halfSize) const {

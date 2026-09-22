@@ -9,6 +9,7 @@
 #include "../Keyboard.h"
 #include "../DebugManager.h"
 #include "../entities/Player.h"
+#include "../VersionManager.h"
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -65,11 +66,19 @@ int main() {
     ShaderProgram shader(vertexCode.c_str(), fragmentCode.c_str());
 
     Camera camera(glm::vec3(0.0f, 2.0f, 8.0f));
-    camera.SetMode(CameraMode::THIRD_PERSON);
-
+    camera.SetMode(CameraMode::SPECTATOR); // SPECTATOR,THIRD_PERSON
+    
+    // Piedra + Textura
+    DMalla Datos01 = Reader::Import("assets/models/test.fbx");
     Cube cube("assets/textures/Texture.png");
-    Floor floor;
-    Player player("assets/textures/Texture.png");
+    Render testObj;
+    testObj.Conf(Datos01);
+
+    // Pizo (No tocar)
+    Floor floor("assets/textures/Texture.png");
+
+    // Jugador
+    Player player("assets/textures/red.png");
 
     // --- MATRIZ DE PROYECCIÓN ---
     // Define el campo de visión (45 grados), el ratio de aspecto y qué tan cerca/lejos vemos.
@@ -120,16 +129,20 @@ int main() {
         debug.beginFrame();
         debug.render();
 
+        // Pos del cube y shaders
         cube.Render(shader.id(), model,
-            0.0f, -1.0f, -4.0f,      // Pos
+            0.4f, -0.5f, -3.7f,      // Pos
             1.0f, 1.0f, 1.0f,       // Size
             0.0f);                 // rotation
+        testObj.Draw(); // Target para dibujar el objeto de arriba
 
+        // Render del pizo (No tocar)
         floor.Render(shader.id(), model,
-            0.0f, -2.0f, 0.0f,        // Pos
-            1.0f, 1.0f, 1.0f,        // Size
+            0.0f, -0.51f, 0.0f,        // Pos
+            5.0f, 1.0f, 5.0f,        // Size
             90.0f);                 // rotation
 
+        // Render del player
         player.Render(shader.id(), model);
 
         debug.endFrame();
@@ -155,12 +168,12 @@ void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
         glfwSetWindowShouldClose(window, true);
     }
 
-    if(Keyboard::keys[GLFW_KEY_F1]) {
+    if(Keyboard::keys[GLFW_KEY_H]) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         camera.Freze();
         Mouse::firstMouse = true;
     }
-    if(Keyboard::keys[GLFW_KEY_F2]) {
+    if(Keyboard::keys[GLFW_KEY_J]) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         camera.Unfreeze();
         Mouse::firstMouse = true;

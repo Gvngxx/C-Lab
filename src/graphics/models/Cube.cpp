@@ -9,6 +9,21 @@ Cube::Cube(const std::string& texturePath) : textureID(0) {
     // === VÉRTICES DEL CUBO ===
     // Cada vértice tiene (X, Y, Z, U, V)
     // El cubo va de -0.5 a +0.5 en cada eje
+    /*
+    float vertx[] = {
+        // Cara frontal (Z = +0.5)
+        -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  // Vértice 0
+        0.5f, -0.5f,  0.5f, 1.0f, 0.0f,  // Vértice 1
+        0.5f,  0.5f,  0.5f, 1.0f, 1.0f,  // Vértice 2
+        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f,  // Vértice 3
+
+        // Cara trasera (Z = -0.5)
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  // Vértice 4
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f,  // Vértice 5
+        0.5f,  0.5f, -0.5f, 1.0f, 1.0f,  // Vértice 6
+        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f   // Vértice 7
+    }; */
+
     float vertx[] = {
         // Cara frontal (Z = +0.5)
         -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  // Vértice 0

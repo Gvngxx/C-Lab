@@ -8,13 +8,22 @@ REQUISITOS:
 - GLFW debe compilarse primero
 
 ====================================================================
-Ejecutar VNC
+Ejecutar VNC y Para VNC
 ====================================================================
 
 clear && ./VNC/start_vnc.sh
+clear && ./VNC/stop_procces.sh
+
+====================================================================
+Make
+====================================================================
+
+python3 build.py
 
 ====================================================================
 Cmake
 ====================================================================
 
-mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Maked"
+rm -rf build && v=$(cat assets/version.txt); base=${v%.*}; patch=${v##*.}; echo "$base.$((patch + 1))" > assets/version.txt && mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release && make && cd ../ && rm -r build && clear && echo "Maked"
+
+v=$(cat assets/version.txt); base=${v%.*}; patch=${v##*.}; echo "$base.$((patch + 1))" > assets/version.txt && cmake --build build && clear && echo "Maked"

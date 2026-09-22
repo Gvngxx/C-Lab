@@ -10,8 +10,6 @@
 #include <iostream>
 #include <string>
 
-#include "ShaderProgram.h"
-
 class DebugManager {
 public:
     DebugManager(GLFWwindow* window, ShaderProgram* shader);

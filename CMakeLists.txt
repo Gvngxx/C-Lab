@@ -82,7 +82,7 @@ if(WIN32 AND MINGW)
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
-        assimp::assimp
+       assimp::assimp
         OpenGL::GL
         Threads::Threads
         dl

@@ -6,6 +6,7 @@
 
 unsigned int TextureLoader::LoadTexture(const std::string& path, int targetWidth, int targetHeight) {
     int width, height, nrChannels;
+    
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (!data) {
         std::cerr << "Failed to load texture: " << path << std::endl;
