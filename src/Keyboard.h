@@ -20,6 +20,7 @@ public:
     static double scrollX, scrollY;
     static bool firstMouse;
     static bool buttons[GLFW_MOUSE_BUTTON_LAST];
+    static int ignoredMotionFrames;
 
     // Callbacks de GLFW
     static void cursorPosCallback(GLFWwindow* window, double _x, double _y);
@@ -30,4 +31,5 @@ public:
     static double getDX();
     static double getDY();
     static double getScrollY();
+    static void resetMotion();
 };

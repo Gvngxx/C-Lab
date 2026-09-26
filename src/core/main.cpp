@@ -138,6 +138,7 @@ int main() {
         testObj.Draw(); // Target para dibujar el objeto de arriba
 
         skin.Render(shader.id(), model,
+            glm::vec3(0.0f),         // Pos
             1.0f, 1.0f, 1.0f,       // Size
             0.0f);                 // rotation
 
@@ -174,15 +175,15 @@ void processInput(GLFWwindow* window, double deltaTime, Camera& camera) {
         glfwSetWindowShouldClose(window, true);
     }
 
-    if(Keyboard::keys[GLFW_KEY_H]) {
+    if(Keyboard::keys[GLFW_KEY_H] && glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_NORMAL) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         camera.Freze();
-        Mouse::firstMouse = true;
+        Mouse::resetMotion();
     }
-    if(Keyboard::keys[GLFW_KEY_J]) {
+    if(Keyboard::keys[GLFW_KEY_J] && glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         camera.Unfreeze();
-        Mouse::firstMouse = true;
+        Mouse::resetMotion();
     }
 
     if(Keyboard::keys[GLFW_KEY_W])

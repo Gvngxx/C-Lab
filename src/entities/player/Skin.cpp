@@ -69,11 +69,11 @@ Skin::Skin(const std::string& texturePath) : textureID(0) {
     glBindVertexArray(0); // Se deja de guardar configs
 }
 
-glm::vec3 GetPosition(glm::vec3 position) {
+glm::vec3 Skin::GetPosition() {
     return position;
 }
 
-void Skin::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, glm::vec3 position, float SizeX, float SizeY, float SizeZ, float rotation) {
+void Skin::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, const glm::vec3& position, float SizeX, float SizeY, float SizeZ, float rotation) {
     glm::mat4 NGenModel = modelMatrix;
     NGenModel = glm::translate(NGenModel, glm::vec3(position.x, position.y, position.z));
     NGenModel = glm::scale(NGenModel, glm::vec3(SizeX, SizeY, SizeZ));

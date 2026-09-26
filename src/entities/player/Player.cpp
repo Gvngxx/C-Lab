@@ -14,8 +14,6 @@ Player::~Player() {
 }
 
 void Player::Update(float deltaTime) {
-    Skin::GetPosition(position);
-
     // Apply gravity
     if (!onGround) {
         velocity.y += gravity * deltaTime;
@@ -40,7 +38,7 @@ void Player::Update(float deltaTime) {
 
 void Player::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix) {
     if (skin) {
-        skin->Render(shaderProgramID, modelMatrix, position.x, position.y, position.z, 1.0f, 1.0f, 1.0f, 0.0f);
+        skin->Render(shaderProgramID, modelMatrix, position, 1.0f, 1.0f, 1.0f, 0.0f);
     }
 }
 

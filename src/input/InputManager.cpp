@@ -14,6 +14,7 @@ double Mouse::scrollX = 0;
 double Mouse::scrollY = 0;
 bool Mouse::firstMouse = true;
 bool Mouse::buttons[GLFW_MOUSE_BUTTON_LAST] = { false };
+int Mouse::ignoredMotionFrames = 0;
 
 // --- KEYBOARD ---
 void Keyboard::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -58,12 +59,23 @@ void Mouse::WheelCallback(GLFWwindow* window, double _dx, double _dy) {
 }
 
 double Mouse::getDX() {
+    if (ignoredMotionFrames > 0) {
+        return 0;
+    }
+
     double _dx = dx;
     dx = 0; // Limpiamos el delta para que no se quede girando solo
     return _dx;
 }
 
 double Mouse::getDY() {
+    if (ignoredMotionFrames > 0) {
+        --ignoredMotionFrames;
+        dx = 0;
+        dy = 0;
+        return 0;
+    }
+
     double _dy = dy;
     dy = 0;
     return _dy;
@@ -73,4 +85,13 @@ double Mouse::getScrollY() {
     double _scrollY = scrollY;
     scrollY = 0;
     return _scrollY;
+}
+
+void Mouse::resetMotion() {
+    dx = 0;
+    dy = 0;
+    lastX = x;
+    lastY = y;
+    firstMouse = true;
+    ignoredMotionFrames = 2;
 }
