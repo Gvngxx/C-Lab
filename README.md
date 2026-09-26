@@ -25,7 +25,8 @@ Un motor de juegos 3D moderno escrito en C++ que utiliza OpenGL, GLFW y GLAD par
   - **imgui/**: Interfaz de usuario para debugging.
   - **json/**: Parsing JSON.
   - **stb/**: Utilidades de imágenes.
-  - **tinygltf/tinyobj**: Carga de modelos 3D.
+  - **OpenAl/**: Libreria para el audio.
+  - **Assimp/**: Carga de modelos 3D.
 - **bin/**: Ejecutables compilados.
 - **VNC/**: Configuración para ejecución en entornos headless.
 - **assets/**: Recursos del juego (modelos, texturas, shaders).
