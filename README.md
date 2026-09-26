@@ -1,4 +1,4 @@
-# LVNG Engine
+# CPP Lab
 
 Un motor de juegos 3D moderno escrito en C++ que utiliza OpenGL, GLFW y GLAD para renderizado en tiempo real. Diseñado para desarrollo profesional de juegos y aplicaciones gráficas.
 
