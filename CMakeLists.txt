@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 project(LabProg VERSION 1.0 LANGUAGES CXX C)
 
 cmake_policy(SET CMP0072 NEW)
@@ -33,7 +33,7 @@ add_subdirectory(third_party/assimp)
 set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
 set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(ALSOFT_INSTALL OFF CACHE BOOL "" FORCE)
-# add_subdirectory(third_party/openal)
+add_subdirectory(third_party/openal)
 
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
@@ -77,12 +77,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 if(WIN32 AND MINGW)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
+        OpenAL::OpenAL
         opengl32 gdi32 user32 kernel32
     )
 else()
     target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
-       assimp::assimp
+        assimp::assimp
+        OpenAL::OpenAL
         OpenGL::GL
         Threads::Threads
         dl

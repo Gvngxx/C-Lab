@@ -1,0 +1,145 @@
+name: Verify dependencies
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: Linux dependencies and build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            cmake \
+            build-essential \
+            libglfw3-dev \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxkbcommon-dev \
+            pkg-config \
+            xvfb \
+            x11vnc \
+            python3-pip \
+            git
+
+      - name: Verify system packages and commands
+        shell: bash
+        run: |
+          set -euo pipefail
+          packages=(
+            cmake build-essential libglfw3-dev libgl1-mesa-dev
+            libglu1-mesa-dev libx11-dev libxrandr-dev libxinerama-dev
+            libxcursor-dev libxi-dev libxkbcommon-dev pkg-config
+            xvfb x11vnc python3-pip git
+          )
+          for package in "${packages[@]}"; do
+            status="$(dpkg-query -W -f='${db:Status-Status}' "$package")"
+            [[ "$status" == installed ]]
+          done
+
+          for command_name in cmake gcc g++ make Xvfb x11vnc xvfb-run git; do
+            command -v "$command_name"
+          done
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check colorama websockify
+
+      - name: Verify Python and VNC dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -c "import colorama, websockify"
+          websockify --help >/dev/null
+          bash -n VNC/start_vnc.sh VNC/stop_procces.sh
+          test -f VNC/noVNC/vnc.html
+          test -x VNC/start_vnc.sh
+
+      - name: Verify third-party dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          git submodule status --recursive
+          if git submodule status --recursive | grep -Eq '^[+-U]'; then
+            echo "A submodule is missing or does not match its recorded revision." >&2
+            exit 1
+          fi
+
+          required_paths=(
+            third_party/glfw/CMakeLists.txt
+            third_party/assimp/CMakeLists.txt
+            third_party/openal/CMakeLists.txt
+            third_party/glad/include/glad/gl.h
+            third_party/glm/glm/glm.hpp
+            third_party/imgui/imgui.cpp
+            third_party/json/json.hpp
+            third_party/stb/stb_image.h
+            third_party/usynergy/uSynergy.c
+          )
+          for path in "${required_paths[@]}"; do
+            test -e "$path" || { echo "Missing dependency: $path" >&2; exit 1; }
+          done
+
+      - name: Configure and build project
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 2
+
+  mingw:
+    name: Verify bundled MinGW toolchain
+    runs-on: windows-2022
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify MinGW files and executables
+        shell: pwsh
+        run: |
+          $bin = Join-Path $env:GITHUB_WORKSPACE 'mingw64\bin'
+          $requiredFiles = @(
+            'gcc.exe',
+            'g++.exe',
+            'cmake.exe',
+            'mingw32-make.exe'
+          )
+
+          if (-not (Test-Path (Join-Path $env:GITHUB_WORKSPACE 'mingw64\mingwvars.bat'))) {
+            throw 'mingw64/mingwvars.bat is missing.'
+          }
+
+          foreach ($file in $requiredFiles) {
+            $path = Join-Path $bin $file
+            if (-not (Test-Path $path)) {
+              throw "Missing MinGW executable: $path"
+            }
+          }
+
+          $env:PATH = "$bin;$env:PATH"
+          foreach ($file in $requiredFiles) {
+            $path = Join-Path $bin $file
+            & $path --version
+            if ($LASTEXITCODE -ne 0) {
+              throw "MinGW executable failed: $file"
+            }
+          }

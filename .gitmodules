@@ -1,0 +1,9 @@
+[submodule "VNC/noVNC"]
+	path = VNC/noVNC
+	url = https://github.com/novnc/noVNC.git
+[submodule "third_party/assimp"]
+	path = third_party/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "third_party/openal"]
+	path = third_party/openal
+	url = https://github.com/kcat/openal-soft.git

@@ -26,7 +26,6 @@ BIN_DIR = os.path.join(BASE_DIR, "bin")
 EXE_PATH = os.path.join(BIN_DIR, "LabProg") # Esto cambiara depende si es linux o windows
 
 # Dependencias third_party que CMake compila dentro del build.
-# OpenAL queda intencionalmente fuera.
 REQUIRED_DIRS = [
     os.path.join(BASE_DIR, "third_party", "glfw"),
     os.path.join(BASE_DIR, "third_party", "assimp"),
@@ -35,6 +34,7 @@ REQUIRED_DIRS = [
     os.path.join(BASE_DIR, "third_party", "glm"),
     os.path.join(BASE_DIR, "third_party", "json"),
     os.path.join(BASE_DIR, "third_party", "stb"),
+    os.path.join(BASE_DIR, "third_party", "openal"),
 ]
 
 compilando = False
@@ -215,10 +215,6 @@ def validar_third_party():
             fail(f"{nombre} no encontrado: {ruta}")
             input("\nPresiona ENTER para salir...")
             sys.exit(1)
-
-    print()
-    info("OpenAL: DESHABILITADO temporalmente")
-
 
 # ============================================================
 # CMAKE / DEPENDENCIAS

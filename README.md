@@ -1,83 +1,45 @@
-# CPP Lab
+# C-Lab
 
-Un motor de juegos 3D moderno escrito en C++ que utiliza OpenGL, GLFW y GLAD para renderizado en tiempo real. Diseñado para desarrollo profesional de juegos y aplicaciones gráficas.
+Proyecto de motor 3D en C++17. Actualmente crea una ventana OpenGL, dibuja modelos y texturas, permite controlar la cámara y contiene una implementación básica de jugador. OpenAL Soft está integrado como dependencia de compilación; todavía no hay reproducción de audio en el código.
 
-## Uso Rápido
+## Requisitos
 
-1. Compila el proyecto con CMake usando `python build.py` o desde el directorio raíz con:
-   ```bash
-   mkdir -p build && cmake -S . -B build && cmake --build build -- -j4
-   ```
-2. Ejecuta `bin/LabProg`.
-3. Si usas Codespaces/VNC, inicia `./VNC/start_vnc.sh` y accede al cliente noVNC en el puerto `6080`. Para input, haz clic en la ventana para dar foco.
+- CMake 3.13 o posterior, compilador C/C++ y Git.
+- Bibliotecas de desarrollo de OpenGL y X11 en Linux.
+- Los submódulos Git de Assimp, noVNC y OpenAL Soft.
 
-## Estructura del Proyecto
-
-- **src/**: Código fuente del motor organizado en módulos:
-  - **core/**: Punto de entrada principal (main.cpp).
-  - **graphics/**: Renderizado y gráficos (ShaderProgram, Triangle, Camera).
-  - **input/**: Gestión de entrada (InputManager, Keyboard).
-  - **debug/**: Herramientas de debugging (DebugManager).
-- **third_party/**: Bibliotecas externas:
-  - **glad/**: Loader de funciones OpenGL.
-  - **glfw/**: Gestión de ventanas y entrada (del sistema).
-  - **glm/**: Matemáticas 3D.
-  - **imgui/**: Interfaz de usuario para debugging.
-  - **json/**: Parsing JSON.
-  - **stb/**: Utilidades de imágenes.
-  - **OpenAl/**: Libreria para el audio.
-  - **Assimp/**: Carga de modelos 3D.
-- **bin/**: Ejecutables compilados.
-- **VNC/**: Configuración para ejecución en entornos headless.
-- **assets/**: Recursos del juego (modelos, texturas, shaders).
-- **build/**: Archivos de compilación CMake.
-
-## Compilación
-
-### Compilación con CMake (Recomendada)
-
-1. Crear el directorio de build y generar la configuración:
+Tras clonar el repositorio, descarga los submódulos:
 
 ```bash
-mkdir -p build
+git submodule update --init --recursive
+```
+
+## Compilar y ejecutar
+
+Desde la raíz del proyecto:
+
+```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-```
-
-2. Compilar el proyecto:
-
-```bash
-cmake --build build -- -j4
-```
-
-3. Ejecutar el binario:
-
-```bash
+cmake --build build --parallel
 ./bin/LabProg
 ```
 
-### Uso en VNC / Codespaces
+La aplicación carga sus shaders y recursos desde `assets/`, así que ejecútala desde la raíz del repositorio.
 
-1. Compila el proyecto antes de iniciar VNC.
-2. Ejecuta el script VNC:
+## Ejecutar en Codespaces con VNC
+
+Instala las dependencias del sistema indicadas en [VNC/README.md](VNC/README.md), compila el proyecto y ejecuta:
 
 ```bash
 ./VNC/start_vnc.sh
 ```
 
-3. Exponer el puerto `6080` y abre en el navegador:
+Expón el puerto `6080` en Codespaces y abre la URL de noVNC que muestra el script. Haz clic en la ventana para enviarle teclado y ratón.
 
-```bash
-http://localhost:6080/vnc.html?host=localhost&port=6080
-```
+## Estructura
 
-### Opción alternativa: script Python
-
-También puedes usar el script `python build.py`, que ahora invoca CMake para configurar, compilar y ejecutar el proyecto.
-
-## Explicación del Código
-
-El ejemplo crea una ventana simple usando GLFW y OpenGL. Muestra una pantalla azul y se cierra al presionar ESC o cerrar la ventana.
-
-- **GLFW**: Maneja la creación de ventanas, eventos de entrada y contexto OpenGL.
-- **GLAD**: Carga las funciones de OpenGL dinámicamente.
-- **OpenGL**: API gráfica para renderizar.
+- `src/`: aplicación, cámara, entrada, jugador, gráficos y depuración.
+- `assets/`: modelos, texturas y shaders utilizados por la aplicación.
+- `third_party/`: dependencias gráficas y utilidades; Assimp y OpenAL Soft son submódulos.
+- `VNC/`: scripts y configuración para ejecutar la aplicación en un entorno Linux sin pantalla.
+- `TODOs.md`: funciones implementadas y trabajo pendiente.
