@@ -36,7 +36,7 @@ Floor::Floor(const std::string& texturePath) : textureID(0) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     glEnableVertexAttribArray(0);
-    glBindVertexArray(0); // Se deja de guardar configs
+    glBindVertexArray(0); // Se deja de guardar config
 }
 
 void Floor::Render(unsigned int shaderProgramID, const glm::mat4& baseModel, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation) {
