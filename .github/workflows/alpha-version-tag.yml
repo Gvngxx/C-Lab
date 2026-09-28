@@ -1,0 +1,51 @@
+name: Create Alpha version tag
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag-version:
+    name: Tag version from assets/version.txt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pushed commit
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Create Alpha tag if missing
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          version="$(tr -d '\r\n' < assets/version.txt)"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version in assets/version.txt: $version" >&2
+            exit 1
+          fi
+
+          tag="v$version"
+          if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
+            echo "Tag $tag already exists; nothing to do."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$tag" "$GITHUB_SHA" -m "$tag - Alpha"
+
+          if git push origin "refs/tags/$tag"; then
+            echo "Created and pushed $tag - Alpha."
+          elif git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
+            echo "Tag $tag was created by another workflow run."
+          else
+            echo "Failed to push tag $tag." >&2
+            exit 1
+          fi
