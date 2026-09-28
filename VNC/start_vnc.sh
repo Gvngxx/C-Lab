@@ -13,6 +13,9 @@ XVFB_DISPLAY=":1"
 RESOLUTION="1280x720x24"
 VNC_PORT=5900
 WEB_PORT=6080
+LOG_WEB_PORT=6081
+LOG_DIR="$ROOT/VNC/terminal"
+APP_LOG="$LOG_DIR/LabProg.log"
 
 # Limpiar procesos anteriores
 echo "0) Limpiando procesos anteriores..."
@@ -40,6 +43,20 @@ fi
 
 if [ -f "$ROOT/VNC/noVNC/utils/novnc_proxy" ]; then
   chmod +x "$ROOT/VNC/noVNC/utils/novnc_proxy"
+fi
+
+# Servimos la vista de logs por separado de noVNC.
+mkdir -p "$LOG_DIR"
+if ! ss -ltn 2>/dev/null | grep -q ":$LOG_WEB_PORT"; then
+  python3 -m http.server "$LOG_WEB_PORT" \
+    --bind 0.0.0.0 \
+    --directory "$LOG_DIR" >/dev/null 2>&1 &
+  for attempt in {1..10}; do
+    if ss -ltn 2>/dev/null | grep -q ":$LOG_WEB_PORT"; then
+      break
+    fi
+    sleep 0.2
+  done
 fi
 
 # Arrancamos Xvfb en segundo plano
@@ -84,9 +101,16 @@ else
 fi
 
 # Ejecutar la aplicación
+run_labprog() {
+  : > "$APP_LOG"
+  echo "Salida de LabProg: $APP_LOG"
+  echo "Vista de logs: http://localhost:$LOG_WEB_PORT/"
+  DISPLAY="$XVFB_DISPLAY" stdbuf -oL -eL "$ROOT/bin/LabProg" > "$APP_LOG" 2>&1 &
+}
+
 if [ -x "$ROOT/bin/LabProg" ]; then
   echo "6) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
-  DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
+  run_labprog
 else
   echo "6) No se encontró ejecutable. Compilando automáticamente..."
   mkdir -p build
@@ -95,7 +119,7 @@ else
 
   if [ -x "$ROOT/bin/LabProg" ]; then
     echo "7) Ejecutando bin/LabProg en DISPLAY=$XVFB_DISPLAY"
-    DISPLAY=$XVFB_DISPLAY "$ROOT/bin/LabProg" &
+    run_labprog
   else
     echo "Error: Falló la compilación. Revisa logs arriba." >&2
     exit 1

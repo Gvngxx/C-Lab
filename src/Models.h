@@ -50,6 +50,15 @@ private:
     unsigned int VBO, VAO, EBO, textureID;
 };
 
+class Table {
+public:
+    Table(const std::string& texturePath);
+    void Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
+    void CleanUp();
+private:
+    unsigned int VBO, VAO, EBO, textureID;
+};
+
 class Floor {
 public:
     Floor(const std::string& texturePath);

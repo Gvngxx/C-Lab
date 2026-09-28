@@ -9,6 +9,11 @@ Render::~Render() {
 }
 
 void Render::Conf(const DMalla& malla) {
+    if (malla.vertices.empty() || malla.indices.empty()) {
+        numIndices = 0;
+        return;
+    }
+
     numIndices = malla.indices.size();
 
     glGenVertexArrays(1, &VAO);
@@ -57,7 +62,8 @@ void Render::Conf(const DMalla& malla) {
 }
 
 void Render::Draw() {
-    if (VAO == 0) return;
+    if (VAO == 0 || numIndices <= 0) return;
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

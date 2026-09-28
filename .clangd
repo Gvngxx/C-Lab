@@ -1,11 +1,20 @@
 CompileFlags:
   Add:
+    - -Isrc
+    - -Ithird_party/glad/include
+    - -Ithird_party/glfw/include
+    - -Ithird_party/glm
+    - -Ithird_party/imgui
+    - -Ithird_party/imgui/misc
+    - -Ithird_party/imgui/backends
+    - -Ithird_party/json
+    - -Ithird_party/stb
+    - -Ithird_party/assimp/include
+    - -Ithird_party/openal/include
+
+---
+If:
+  PathMatch: '.*\.(cpp|cc|cxx|h|hpp|hh|hxx)$'
+CompileFlags:
+  Add:
     - -std=c++17
-    - -I${workspaceFolder}/lib/glad/include
-    - -I${workspaceFolder}/lib/glfw/include
-    - -I${workspaceFolder}/lib/glm
-    - -I${workspaceFolder}/lib/imgui
-    - -I${workspaceFolder}/lib/json
-    - -I${workspaceFolder}/lib/stb
-    - -I${workspaceFolder}/lib/tinygltf
-    - -I${workspaceFolder}/lib/tinyobj

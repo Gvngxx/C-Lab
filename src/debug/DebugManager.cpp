@@ -94,6 +94,11 @@ void DebugManager::render() {
 
     // -- SHOW LA DEMO Y EXTRAS --
     if (ImGui::CollapsingHeader("Extra", ImGuiTreeNodeFlags_None)) {
+        // Test Button
+        if (ImGui::Button("Test Press")) {
+            std::cout << "[+] Pressed button" << std::endl;
+        }
+
         if (ImGui::Checkbox("Tools", &showDemoWindow)) {
             ImGui::ShowDemoWindow(&showDemoWindow);
         } else {

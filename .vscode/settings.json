@@ -10,8 +10,15 @@
     },
     "files.exclude": {
         "**/.git": true,
+        "**/.github": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.clangd": true,
+        "**/CVS": true,
         "**/build": false,
         "**/bin": false,
+        "**/sc": true,
+        "**/imgui.ini": true,
         "**/mingw64": true
     }
 }

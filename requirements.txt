@@ -1,23 +1,12 @@
 # System dependencies (apt packages)
-# Run: sudo apt update && sudo apt install -y <packages>
-cmake
-build-essential
-libglfw3-dev
-libgl1-mesa-dev
-libx11-dev
-libxrandr-dev
-libxinerama-dev
-libxcursor-dev
-libxi-dev
-xvfb
-x11vnc
-python3-pip
-git
+# Run: sudo apt update && sudo apt install -y cmake build-essential libglfw3-dev libgl1-mesa-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev xvfb x11vnc python3-pip git
 
 # Python packages
 # Run: pip install <packages>
 websockify
 colorama
+numpy
+
 
 # Additional notes:
 # - Clone noVNC: git clone https://github.com/novnc/noVNC.git VNC/noVNC

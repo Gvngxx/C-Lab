@@ -18,6 +18,10 @@ Este directorio contiene scripts para ejecutar el motor LVNG-Engine dentro de un
    ```
    http://localhost:6080/vnc.html?host=localhost&port=6080
    ```
+5. Para ver únicamente la salida de `LabProg`, expón el puerto `6081` y abre:
+   ```
+   http://localhost:6081/
+   ```
 
 > Nota: el servidor VNC interno usa `5900`, pero el acceso desde el navegador se hace a través del proxy noVNC en `6080`.
 
@@ -26,6 +30,7 @@ Este directorio contiene scripts para ejecutar el motor LVNG-Engine dentro de un
 - Arranca `x11vnc` sobre ese display con captura de teclado y mouse (`-grabkbd -grabptr`).
 - Arranca `websockify` para conectar noVNC al puerto web.
 - Ejecuta `bin/LabProg` dentro de `DISPLAY=:1`.
+- Guarda `stdout` y `stderr` de `LabProg` en `VNC/terminal/LabProg.log`; la página del puerto `6081` actualiza ese archivo automáticamente.
 
 ## Notas
 - En Linux/Desktop local, compile y ejecute `bin/LabProg` directamente.

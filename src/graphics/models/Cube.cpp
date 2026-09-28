@@ -90,6 +90,7 @@ void Cube::Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, fl
     NGenModel = glm::translate(NGenModel, glm::vec3(x, y, z));
     NGenModel = glm::scale(NGenModel, glm::vec3(SizeX, SizeY, SizeZ));
     NGenModel = glm::rotate(NGenModel, glm::radians(rotation), glm::vec3(0.0f,  1.0f,  0.0f));
+    NGenModel = glm::rotate(NGenModel, glm::radians(rotation), glm::vec3(1.0f,  0.0f,  0.0f));
     
     // Usar el programa shader
     glUseProgram(shaderProgramID);

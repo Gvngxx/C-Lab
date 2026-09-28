@@ -68,11 +68,17 @@ int main() {
     Camera camera(glm::vec3(0.0f, 2.0f, 8.0f));
     camera.SetMode(CameraMode::SPECTATOR); // SPECTATOR,THIRD_PERSON
     
+    // Table
+    DMalla TableMesh = Reader::Import("assets/models/table/optimized_table.fbx");
+    Table table("assets/textures/table.png");
+    Render tableObj;
+    tableObj.Conf(TableMesh);
+
     // Piedra + Textura
-    DMalla Datos01 = Reader::Import("assets/models/test.fbx");
+    DMalla Test1 = Reader::Import("assets/models/test.fbx");
     Cube cube("assets/textures/Texture.png");
     Render testObj;
-    testObj.Conf(Datos01);
+    testObj.Conf(Test1);
 
     // Pizo (No tocar)
     Floor floor("assets/textures/Texture.png");
@@ -130,24 +136,30 @@ int main() {
         debug.beginFrame();
         debug.render();
 
-        // Pos del cube y shaders
+        // Render de la mesa
+        table.Render(shader.id(), model,
+            2.0f, 0.91f, 0.0f,        // Pos
+            0.02f, 0.02f, 0.02f,      // Size
+            -90.0f);                  // rotation
+        tableObj.Draw();
+
+        // Modelo de prueba con transformacion independiente
         cube.Render(shader.id(), model,
             0.4f, -0.5f, -3.7f,      // Pos
-            1.0f, 1.0f, 1.0f,       // Size
-            0.0f);                 // rotation
-        testObj.Draw(); // Target para dibujar el objeto de arriba
-
-        skin.Render(shader.id(), model,
-            glm::vec3(0.0f),         // Pos
-            1.0f, 1.0f, 1.0f,       // Size
-            0.0f);                 // rotation
+            0.5f, 0.5f, 0.5f,         // Size
+            0.0f);                    // rotation
+        testObj.Draw();
 
         // Render del pizo (No tocar)
         floor.Render(shader.id(), model,
             0.0f, -0.51f, 0.0f,        // Pos
-            5.0f, 1.0f, 5.0f,        // Size
+            10.0f, 1.0f, 10.0f,        // Size
             90.0f);                 // rotation
 
+        // Render del skin
+        skin.Render(shader.id(), model, glm::vec3(0.0f),
+            1.0f, 1.0f, 1.0f,       // Size
+            0.0f);                 // rotation
         // Render del player
         player.Render(shader.id(), model);
 
@@ -156,6 +168,7 @@ int main() {
         glfwPollEvents();
     }
 
+    table.CleanUp();
     cube.CleanUp();
     skin.CleanUp();
     floor.CleanUp();
