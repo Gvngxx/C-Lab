@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -58,8 +58,18 @@ jobs:
             command -v "$command_name"
           done
 
+      - name: Verify bundled MinGW Linux wrappers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for tool in gcc.exe g++.exe cmake.exe mingw32-make.exe; do
+            path="mingw64/bin/$tool"
+            test -f "$path"
+            bash "$path" --version
+          done
+
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.x"
 
@@ -107,39 +117,53 @@ jobs:
           cmake --build build --parallel 2
 
   mingw:
-    name: Verify bundled MinGW toolchain
+    name: Verify bundled MinGW Windows compiler
     runs-on: windows-2022
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Verify MinGW files and executables
+      - name: Compile and run with bundled MinGW
         shell: pwsh
         run: |
           $bin = Join-Path $env:GITHUB_WORKSPACE 'mingw64\bin'
-          $requiredFiles = @(
-            'gcc.exe',
-            'g++.exe',
-            'cmake.exe',
-            'mingw32-make.exe'
-          )
+          $gcc = Join-Path $bin 'x86_64-w64-mingw32-gcc.exe'
+          $gxx = Join-Path $bin 'x86_64-w64-mingw32-g++.exe'
 
           if (-not (Test-Path (Join-Path $env:GITHUB_WORKSPACE 'mingw64\mingwvars.bat'))) {
             throw 'mingw64/mingwvars.bat is missing.'
           }
 
-          foreach ($file in $requiredFiles) {
-            $path = Join-Path $bin $file
+          foreach ($path in @($gcc, $gxx)) {
             if (-not (Test-Path $path)) {
-              throw "Missing MinGW executable: $path"
+              throw "Missing Windows MinGW compiler: $path"
             }
           }
 
           $env:PATH = "$bin;$env:PATH"
-          foreach ($file in $requiredFiles) {
-            $path = Join-Path $bin $file
-            & $path --version
-            if ($LASTEXITCODE -ne 0) {
-              throw "MinGW executable failed: $file"
-            }
+          & $gcc --version
+          if ($LASTEXITCODE -ne 0) { throw 'MinGW GCC failed to start.' }
+          & $gxx --version
+          if ($LASTEXITCODE -ne 0) { throw 'MinGW G++ failed to start.' }
+
+          $target = (& $gcc -dumpmachine).Trim()
+          if ($LASTEXITCODE -ne 0 -or $target -ne 'x86_64-w64-mingw32') {
+            throw "Unexpected MinGW target: $target"
           }
+
+          $cSource = Join-Path $env:RUNNER_TEMP 'mingw-smoke.c'
+          $cppSource = Join-Path $env:RUNNER_TEMP 'mingw-smoke.cpp'
+          $cExecutable = Join-Path $env:RUNNER_TEMP 'mingw-smoke-c.exe'
+          $cppExecutable = Join-Path $env:RUNNER_TEMP 'mingw-smoke-cpp.exe'
+          Set-Content -Path $cSource -Value 'int main(void) { return 0; }' -NoNewline
+          Set-Content -Path $cppSource -Value 'int main() { return 0; }' -NoNewline
+
+          & $gcc $cSource '-o' $cExecutable
+          if ($LASTEXITCODE -ne 0) { throw 'MinGW could not compile the C smoke test.' }
+          & $cExecutable
+          if ($LASTEXITCODE -ne 0) { throw 'The MinGW C smoke test failed.' }
+
+          & $gxx $cppSource '-o' $cppExecutable
+          if ($LASTEXITCODE -ne 0) { throw 'MinGW could not compile the C++ smoke test.' }
+          & $cppExecutable
+          if ($LASTEXITCODE -ne 0) { throw 'The MinGW C++ smoke test failed.' }
