@@ -68,6 +68,12 @@ int main() {
     Camera camera(glm::vec3(0.0f, 2.0f, 8.0f));
     camera.SetMode(CameraMode::SPECTATOR); // SPECTATOR,THIRD_PERSON
     
+    // Television + Textura
+    DMalla TVMesh = Reader::Import("assets/models/television/tv.fbx");
+    Television tv("assets/textures/television.png");
+    Render tvObj;
+    tvObj.Conf(TVMesh);
+
     // Table
     DMalla TableMesh = Reader::Import("assets/models/table/optimized_table.fbx");
     Table table("assets/textures/table.png");
@@ -104,7 +110,6 @@ int main() {
         double currentFrame = glfwGetTime();
         deltatime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -135,6 +140,13 @@ int main() {
         // --- Render ---
         debug.beginFrame();
         debug.render();
+
+        // Render de el TV
+        tv.Render(shader.id(), model,
+            1.5f, 1.7f, 0.0f,         // Pos
+            0.8f, 0.8f, 0.8f,      // Size
+            -90.0f);                  // rotation
+        tvObj.Draw();
 
         // Render de la mesa
         table.Render(shader.id(), model,

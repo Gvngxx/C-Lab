@@ -41,9 +41,9 @@ private:
     int numIndices;
 };
 
-class Cube {
+class Television {
 public:
-    Cube(const std::string& texturePath);
+    Television(const std::string& texturePath);
     void Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
     void CleanUp();
 private:
@@ -53,6 +53,15 @@ private:
 class Table {
 public:
     Table(const std::string& texturePath);
+    void Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
+    void CleanUp();
+private:
+    unsigned int VBO, VAO, EBO, textureID;
+};
+
+class Cube {
+public:
+    Cube(const std::string& texturePath);
     void Render(unsigned int shaderProgramID, const glm::mat4& modelMatrix, float x, float y, float z, float SizeX, float SizeY, float SizeZ, float rotation);
     void CleanUp();
 private:
