@@ -1,6 +1,7 @@
 #include "../ShaderProgram.h"
 #include "../VersionManager.h"
 #include "../DebugManager.h"
+#include "../simulation/Simulation.h"
 
 #include <iostream>
 
@@ -85,6 +86,47 @@ void DebugManager::render() {
     }
     ImGui::Separator();
 
+    if (simulation && ImGui::CollapsingHeader("Microverse", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Text("Blessed source: %.2f", simulation->BlessedSource().quantity);
+        ImGui::Text("Mugen no Me: %.2f / %.2f", simulation->MugenNoMe().storedEnergy, simulation->MugenNoMe().capacity);
+        ImGui::Text("Tenkaikai: %.2f / %.2f", simulation->Tenkaikai().storedEnergy, simulation->Tenkaikai().capacity);
+        ImGui::Text("Cursed object: %.2f cursed", simulation->CursedObject().quantity);
+        ImGui::Text("Absorption rate: %.2f/s | Transfer rate: %.2f/s",
+            simulation->MugenNoMe().absorptionRate, simulation->MugenNoMe().transferRate);
+
+        bool tenkaikaiActive = simulation->Tenkaikai().active;
+        if (ImGui::Checkbox("Tenkaikai active", &tenkaikaiActive)) {
+            simulation->SetEyeActive(microverse::EyeId::Tenkaikai, tenkaikaiActive);
+        }
+        bool mugenActive = simulation->MugenNoMe().active;
+        if (ImGui::Checkbox("Mugen no Me active", &mugenActive)) {
+            simulation->SetEyeActive(microverse::EyeId::MugenNoMe, mugenActive);
+        }
+        if (ImGui::Button("Transfer energy")) {
+            simulation->TransferToTenkaikai(0.25);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Form barrier")) {
+            simulation->FormBarrier();
+        }
+        if (ImGui::Button("Launch test object")) {
+            simulation->LaunchTestObject();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Inspect cursed object")) {
+            simulation->InspectCursedObject();
+        }
+
+        ImGui::Text("Barrier: %s | Object blocked: %s",
+            simulation->BarrierFormed() ? "formed" : "none",
+            simulation->TestObject().blockedByBarrier ? "yes" : "no");
+        ImGui::Text("Curse: %s (severity %d)", simulation->TestCurse().active ? "active" : "fallback applied",
+            simulation->TestCurse().severity);
+        ImGui::TextWrapped("Last event: %s", simulation->LastEvent().c_str());
+        ImGui::Text("Energy ledger: %.4f / %.4f", simulation->TotalAccountedEnergy(), simulation->InitialEnergy());
+    }
+    ImGui::Separator();
+
     // -- INFORMATION --
     if (ImGui::CollapsingHeader("Info", ImGuiTreeNodeFlags_None)) {
         ImGui::Text("Version: %s", Version::GetVer().c_str());
@@ -113,4 +155,8 @@ void DebugManager::render() {
 void DebugManager::endFrame() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void DebugManager::setSimulation(microverse::Simulation* simulation) {
+    this->simulation = simulation;
 }

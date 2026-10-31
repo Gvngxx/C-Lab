@@ -1,0 +1,19 @@
+{
+  "passive_absorption_radius": 20.0,
+  "direct_manipulation_range": 30.0,
+  "cursed_detection_range": 15.0,
+  "mugen_capacity": 100.0,
+  "mugen_absorption_rate": 10.0,
+  "mugen_transfer_rate": 20.0,
+  "tenkaikai_capacity": 100.0,
+  "barrier_cost": 10.0,
+  "barrier_minimum_cohesion": 0.7,
+  "barrier_minimum_stability": 0.8,
+  "energy_control_cost": 1.0,
+  "blessed_source_cohesion": 0.85,
+  "blessed_source_stability": 0.9,
+  "blessed_source_quantity": 200.0,
+  "cursed_object_quantity": 20.0,
+  "curse_upkeep_rate": 0.5,
+  "curse_fallback": "suspended"
+}

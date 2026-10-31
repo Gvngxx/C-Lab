@@ -10,7 +10,9 @@
 #include "../DebugManager.h"
 #include "../entities/Player.h"
 #include "../VersionManager.h"
+#include "../simulation/Simulation.h"
 #include <filesystem>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -25,6 +27,13 @@ std::string readFile(const char* filePath) {
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, double deltaTime, Camera& camera);
+
+bool keyPressed(GLFWwindow* window, int key, bool& wasDown) {
+    const bool isDown = glfwGetKey(window, key) == GLFW_PRESS;
+    const bool pressed = isDown && !wasDown;
+    wasDown = isDown;
+    return pressed;
+}
 
 int main() {
     glfwInit();
@@ -93,6 +102,8 @@ int main() {
     Skin skin("assets/textures/red.png");
     Player player("assets/textures/red.png");
 
+    microverse::Simulation simulation(microverse::SimulationConfig::Load("assets/config/microverse.json"));
+
     // --- MATRIZ DE PROYECCIÓN ---
     // Define el campo de visión (45 grados), el ratio de aspecto y qué tan cerca/lejos vemos.
     glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), (float)1280 / (float)720, 0.1f, 100.0f);
@@ -101,15 +112,26 @@ int main() {
     // Obtiene la posición y dirección actual de la cámara
     glm::mat4 view = camera.GetViewMatrix();
     DebugManager debug{window, &shader};
+    debug.setSimulation(&simulation);
 
-    float deltatime = 0.0f;
-    float lastFrame = 0.0f;
+    double deltatime = 0.0;
+    double lastFrame = 0.0;
+    double simulationAccumulator = 0.0;
+    constexpr double fixedSimulationStep = 1.0 / 60.0;
+    bool eyeOneWasDown = false;
+    bool eyeTwoWasDown = false;
+    bool transferWasDown = false;
+    bool manipulateWasDown = false;
+    bool barrierWasDown = false;
+    bool inspectWasDown = false;
+    bool launchWasDown = false;
 
     // Loop
     while (!glfwWindowShouldClose(window)) {
         double currentFrame = glfwGetTime();
         deltatime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        simulationAccumulator += std::min(deltatime, 0.25);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -126,6 +148,33 @@ int main() {
 
         // ---- Input ----
         processInput(window, deltatime, camera);
+        simulation.SetPlayerPosition({camera.cameraPos.x, camera.cameraPos.y, camera.cameraPos.z});
+        while (simulationAccumulator >= fixedSimulationStep) {
+            simulation.Step(fixedSimulationStep);
+            simulationAccumulator -= fixedSimulationStep;
+        }
+
+        if (keyPressed(window, GLFW_KEY_1, eyeOneWasDown)) {
+            simulation.SetEyeActive(microverse::EyeId::Tenkaikai, !simulation.Tenkaikai().active);
+        }
+        if (keyPressed(window, GLFW_KEY_2, eyeTwoWasDown)) {
+            simulation.SetEyeActive(microverse::EyeId::MugenNoMe, !simulation.MugenNoMe().active);
+        }
+        if (keyPressed(window, GLFW_KEY_E, transferWasDown)) {
+            simulation.TransferToTenkaikai(0.25);
+        }
+        if (keyPressed(window, GLFW_KEY_R, manipulateWasDown)) {
+            simulation.ManipulateBlessedEnergy(simulation.BlessedSource().id, {0.0, 0.0, -1.0});
+        }
+        if (keyPressed(window, GLFW_KEY_B, barrierWasDown)) {
+            simulation.FormBarrier();
+        }
+        if (keyPressed(window, GLFW_KEY_F, inspectWasDown)) {
+            simulation.InspectCursedObject();
+        }
+        if (keyPressed(window, GLFW_KEY_O, launchWasDown)) {
+            simulation.LaunchTestObject();
+        }
         double mouseDX = Mouse::getDX();
         double mouseDY = Mouse::getDY();
         if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED || Mouse::buttons[GLFW_MOUSE_BUTTON_LEFT]) {
@@ -161,6 +210,34 @@ int main() {
             0.5f, 0.5f, 0.5f,         // Size
             0.0f);                    // rotation
         testObj.Draw();
+
+        cube.Render(shader.id(), model,
+            static_cast<float>(simulation.BlessedSource().position.x),
+            static_cast<float>(simulation.BlessedSource().position.y),
+            static_cast<float>(simulation.BlessedSource().position.z),
+            0.18f, 0.18f, 0.18f, 0.0f);
+        testObj.Draw();
+
+        cube.Render(shader.id(), model,
+            static_cast<float>(simulation.CursedObject().position.x),
+            static_cast<float>(simulation.CursedObject().position.y),
+            static_cast<float>(simulation.CursedObject().position.z),
+            0.24f, 0.24f, 0.24f, 0.0f);
+        testObj.Draw();
+
+        const auto& physicalObject = simulation.TestObject();
+        cube.Render(shader.id(), model,
+            static_cast<float>(physicalObject.position.x),
+            static_cast<float>(physicalObject.position.y),
+            static_cast<float>(physicalObject.position.z),
+            0.25f, 0.25f, 0.25f, 0.0f);
+        testObj.Draw();
+
+        if (simulation.BarrierFormed()) {
+            cube.Render(shader.id(), model, 2.0f, 1.0f, 0.0f,
+                0.08f, 1.5f, 1.5f, 0.0f);
+            testObj.Draw();
+        }
 
         // Render del pizo (No tocar)
         floor.Render(shader.id(), model,

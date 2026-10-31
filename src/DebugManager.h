@@ -10,6 +10,10 @@
 #include <iostream>
 #include <string>
 
+namespace microverse {
+class Simulation;
+}
+
 class DebugManager {
 public:
     DebugManager(GLFWwindow* window, ShaderProgram* shader);
@@ -18,10 +22,12 @@ public:
     void beginFrame();
     void render();
     void endFrame();
+    void setSimulation(microverse::Simulation* simulation);
 
 private:
     GLFWwindow* window;
     ShaderProgram* shader;
+    microverse::Simulation* simulation = nullptr;
 
     // UI state
     bool showDemoWindow = false;
